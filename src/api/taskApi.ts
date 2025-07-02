@@ -1,6 +1,6 @@
 import axiosInstance from "./axios";
 
-interface TaskPayload {
+export interface TaskPayload {
   title: string;
   description?: string;
   status?: "todo" | "in-progress" | "done";
