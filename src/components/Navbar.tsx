@@ -1,11 +1,17 @@
-import { Link, useNavigate } from "react-router-dom"
+import type { User } from "@/types/User"
 import { Button } from "@/components/ui/button"
+import { Link, useNavigate } from "react-router-dom"
 
-export default function Navbar({ user }: { user: any }) {
+interface NavbarProps {
+  user: User
+  logout: () => void
+}
+
+export default function Navbar({ user, logout }: NavbarProps) {
   const navigate = useNavigate()
 
   const handleLogout = () => {
-    localStorage.removeItem("token")
+    logout()
     navigate("/login")
   }
 

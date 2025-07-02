@@ -1,8 +1,7 @@
-"use client"
-
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
+import { Link } from "react-router-dom"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -74,6 +73,13 @@ export default function LoginForm({
         <Button type="submit" className="w-full">
           Login
         </Button>
+
+        <p className="text-center text-sm text-gray-600 mt-4">
+          Don&apos;t have an account?{" "}
+          <Link to="/register" className="text-blue-600 hover:underline">
+            Register here
+          </Link>
+        </p>
       </form>
     </Form>
   )

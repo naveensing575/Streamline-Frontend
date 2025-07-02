@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom"
 import useAuth from "@/hooks/useAuth"
 import LoginForm from "@/components/LoginForm"
 
-export default function Login() {
+const Login = () => {
   const { handleLogin } = useAuth()
   const navigate = useNavigate()
 
@@ -22,3 +22,5 @@ export default function Login() {
     </div>
   )
 }
+
+export default Login
