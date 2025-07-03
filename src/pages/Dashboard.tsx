@@ -42,21 +42,42 @@ export default function Dashboard() {
   // SAVE EDIT
   const handleSaveEdit = async (updates: Partial<Task>) => {
     if (selectedTask) {
+      const safeUpdates = {
+        ...updates,
+        dueDate: updates.dueDate ? new Date(updates.dueDate) : undefined,
+      };
+  
+      // Compare each field: if nothing changed, skip
+      const nothingChanged =
+        selectedTask.title === safeUpdates.title &&
+        selectedTask.description === safeUpdates.description &&
+        selectedTask.status === safeUpdates.status &&
+        new Date(selectedTask.dueDate || '').toDateString() ===
+          (safeUpdates.dueDate
+            ? safeUpdates.dueDate.toDateString()
+            : '');
+  
+      if (nothingChanged) {
+        toast.info("⚡ No changes detected. Nothing updated.");
+        setEditOpen(false);
+        setSelectedTask(null);
+        return;
+      }
+  
+      // If changed, proceed with API call
       try {
-        const safeUpdates = {
-          ...updates,
-          dueDate: updates.dueDate ? new Date(updates.dueDate) : undefined,
-        }
-        await editTask(selectedTask._id, safeUpdates)
-        toast.success(`✏️ "${updates.title}" updated!`)
-        setEditOpen(false)
-        setSelectedTask(null)
+        const updatedTask = await editTask(selectedTask._id, safeUpdates);
+        toast.success(`✏️ "${updatedTask.title}" updated!`);
+        setEditOpen(false);
+        setSelectedTask(null);
       } catch (err) {
-        console.error(err)
-        toast.error("❌ Failed to update task. Please try again.")
+        console.error(err);
+        toast.error("❌ Failed to update task. Please try again.");
       }
     }
-  }
+  };
+  
+  
 
   // DELETE TASK
   const handleDeleteTask = async (taskId: string) => {
