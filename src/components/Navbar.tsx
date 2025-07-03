@@ -1,6 +1,7 @@
 import type { User } from "@/types/User"
 import { Button } from "@/components/ui/button"
 import { Link, useNavigate } from "react-router-dom"
+import { toast } from "sonner"
 
 interface NavbarProps {
   user: User
@@ -12,6 +13,7 @@ export default function Navbar({ user, logout }: NavbarProps) {
 
   const handleLogout = () => {
     logout()
+    toast.success("👋 Logged out successfully.")
     navigate("/login")
   }
 
