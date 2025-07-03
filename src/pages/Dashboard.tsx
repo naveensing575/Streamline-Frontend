@@ -2,42 +2,70 @@ import { useState } from "react"
 import Navbar from "@/components/Navbar"
 import TaskList, { type Task } from "@/components/TaskList"
 import AddTaskModal from "@/components/AddTaskModal"
-import EditTaskModal from "@/components/EditTaskModal" // ✅ Make sure you import it!
+import EditTaskModal from "@/components/EditTaskModal"
 import useAuth from "@/hooks/useAuth"
 import useTasks from "@/hooks/useTasks"
+import { toast } from "sonner"
 
 export default function Dashboard() {
   const { user, logout } = useAuth()
   const { tasks, loading, addTask, editTask, removeTask } = useTasks()
+
   const [editOpen, setEditOpen] = useState(false)
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
 
   if (!user) return null
 
+  // ADD TASK
   const handleAddTask = async (data: {
     title: string
     description?: string
     status: "todo" | "in-progress" | "done"
     dueDate?: Date
   }) => {
-    await addTask(data)
+    try {
+      await addTask(data)
+      toast.success(`✅ "${data.title}" created!`)
+    } catch (err) {
+      console.error(err)
+      toast.error("❌ Failed to create task. Please try again.")
+    }
   }
 
+  // OPEN EDIT MODAL
   const handleEdit = (task: Task) => {
-    console.log("handleEdit called:", task)
+    console.log("Editing task:", task)
     setSelectedTask(task)
     setEditOpen(true)
   }
 
+  // SAVE EDIT
   const handleSaveEdit = async (updates: Partial<Task>) => {
     if (selectedTask) {
-      const safeUpdates = {
-        ...updates,
-        dueDate: updates.dueDate ? new Date(updates.dueDate) : undefined,
+      try {
+        const safeUpdates = {
+          ...updates,
+          dueDate: updates.dueDate ? new Date(updates.dueDate) : undefined,
+        }
+        await editTask(selectedTask._id, safeUpdates)
+        toast.success(`✏️ "${updates.title}" updated!`)
+        setEditOpen(false)
+        setSelectedTask(null)
+      } catch (err) {
+        console.error(err)
+        toast.error("❌ Failed to update task. Please try again.")
       }
-      await editTask(selectedTask._id, safeUpdates)
-      setEditOpen(false)
-      setSelectedTask(null)
+    }
+  }
+
+  // DELETE TASK
+  const handleDeleteTask = async (taskId: string) => {
+    try {
+      await removeTask(taskId)
+      toast.success("🗑️ Task deleted successfully!")
+    } catch (err) {
+      console.error(err)
+      toast.error("❌ Failed to delete task. Please try again.")
     }
   }
 
@@ -53,8 +81,13 @@ export default function Dashboard() {
         {loading ? (
           <p>Loading tasks...</p>
         ) : (
-          <TaskList tasks={tasks} onEdit={handleEdit} onDelete={removeTask} />
+          <TaskList
+            tasks={tasks}
+            onEdit={handleEdit}
+            onDelete={handleDeleteTask}
+          />
         )}
+
         {selectedTask && (
           <EditTaskModal
             open={editOpen}
