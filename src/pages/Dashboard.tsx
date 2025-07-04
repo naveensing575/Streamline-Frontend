@@ -1,81 +1,105 @@
-import { useState } from "react"
-import Navbar from "@/components/Navbar"
-import TaskList, { type Task } from "@/components/TaskList"
-import AddTaskModal from "@/components/AddTaskModal"
-import EditTaskModal from "@/components/EditTaskModal"
-import useAuth from "@/hooks/useAuth"
-import useTasks from "@/hooks/useTasks"
-import { toast } from "sonner"
+import { useState } from "react";
+import Navbar from "@/components/Navbar";
+import TaskList, { type Task } from "@/components/TaskList";
+import AddTaskModal from "@/components/AddTaskModal";
+import EditTaskModal from "@/components/EditTaskModal";
+import StopwatchModal from "@/components/StopwatchModal"; // ✅ NEW
+import useAuth from "@/hooks/useAuth";
+import useTasks from "@/hooks/useTasks";
+import { toast } from "sonner";
 
 export default function Dashboard() {
-  const { user, logout } = useAuth()
-  const { tasks, loading, addTask, editTask, removeTask } = useTasks()
+  const { user, logout } = useAuth();
+  const { tasks, loading, addTask, editTask, removeTask } = useTasks();
 
-  const [editOpen, setEditOpen] = useState(false)
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null)
+  const [editOpen, setEditOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
-  if (!user) return null
+  if (!user) return null;
 
   // ADD TASK
   const handleAddTask = async (data: {
-    title: string
-    description?: string
-    status: "todo" | "in-progress" | "done"
-    dueDate?: Date
+    title: string;
+    description?: string;
+    status: "todo" | "in-progress" | "done";
+    dueDate?: Date;
   }) => {
     try {
-      await addTask(data)
-      toast.success(`✅ "${data.title}" created!`)
+      await addTask(data);
+      toast.success(`✅ "${data.title}" created!`);
     } catch (err) {
-      console.error(err)
-      toast.error("❌ Failed to create task. Please try again.")
+      console.error(err);
+      toast.error("❌ Failed to create task. Please try again.");
     }
-  }
+  };
 
   // OPEN EDIT MODAL
   const handleEdit = (task: Task) => {
-    console.log("Editing task:", task)
-    setSelectedTask(task)
-    setEditOpen(true)
-  }
+    console.log("Editing task:", task);
+    setSelectedTask(task);
+    setEditOpen(true);
+  };
 
   // SAVE EDIT
   const handleSaveEdit = async (updates: Partial<Task>) => {
     if (selectedTask) {
+      const safeUpdates = {
+        ...updates,
+        dueDate: updates.dueDate ? new Date(updates.dueDate) : undefined,
+      };
+
+      const nothingChanged =
+        selectedTask.title === safeUpdates.title &&
+        selectedTask.description === safeUpdates.description &&
+        selectedTask.status === safeUpdates.status &&
+        new Date(selectedTask.dueDate || "").toDateString() ===
+          (safeUpdates.dueDate ? safeUpdates.dueDate.toDateString() : "");
+
+      if (nothingChanged) {
+        toast.info("⚡ No changes detected. Nothing updated.");
+        setEditOpen(false);
+        setSelectedTask(null);
+        return;
+      }
+
       try {
-        const safeUpdates = {
-          ...updates,
-          dueDate: updates.dueDate ? new Date(updates.dueDate) : undefined,
-        }
-        await editTask(selectedTask._id, safeUpdates)
-        toast.success(`✏️ "${updates.title}" updated!`)
-        setEditOpen(false)
-        setSelectedTask(null)
+        const updatedTask = await editTask(selectedTask._id, safeUpdates);
+        toast.success(`✏️ "${updatedTask.title}" updated!`);
+        setEditOpen(false);
+        setSelectedTask(null);
       } catch (err) {
-        console.error(err)
-        toast.error("❌ Failed to update task. Please try again.")
+        console.error(err);
+        toast.error("❌ Failed to update task. Please try again.");
       }
     }
-  }
+  };
 
   // DELETE TASK
   const handleDeleteTask = async (taskId: string) => {
     try {
-      await removeTask(taskId)
-      toast.success("🗑️ Task deleted successfully!")
+      await removeTask(taskId);
+      toast.success("🗑️ Task deleted successfully!");
     } catch (err) {
-      console.error(err)
-      toast.error("❌ Failed to delete task. Please try again.")
+      console.error(err);
+      toast.error("❌ Failed to delete task. Please try again.");
     }
-  }
+  };
 
   return (
     <>
       <Navbar user={user} logout={logout} />
+
       <main className="max-w-4xl mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-2xl font-bold">Welcome, {user.name}</h1>
-          <AddTaskModal onAddTask={handleAddTask} />
+
+          {/* Add task button */}
+          <div className="flex items-center gap-4">
+            <AddTaskModal onAddTask={handleAddTask} />
+
+            {/* ✅ Stopwatch clock icon */}
+            <StopwatchModal />
+          </div>
         </div>
 
         {loading ? (
@@ -98,5 +122,5 @@ export default function Dashboard() {
         )}
       </main>
     </>
-  )
+  );
 }

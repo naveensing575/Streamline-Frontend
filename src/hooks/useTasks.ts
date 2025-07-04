@@ -23,12 +23,14 @@ export default function useTasks() {
     setTasks((prev) => [...prev, newTask])
   }
 
-  const editTask = async (taskId: string, updates: Partial<TaskPayload>) => {
-    const updated = await updateTask(taskId, updates)
+  const editTask = async (id: string, updates: Partial<Task>): Promise<Task> => {
+    const updatedTask = await updateTask(id, updates);
     setTasks((prev) =>
-      prev.map((task) => (task._id === taskId ? updated : task))
-    )
-  }
+      prev.map((task) => (task._id === id ? updatedTask : task))
+    );
+    return updatedTask;
+  };
+  
 
   const removeTask = async (taskId: string) => {
     await deleteTask(taskId)
