@@ -18,32 +18,33 @@ export default function TaskItem({
   onEdit,
   onDelete,
 }: TaskItemProps) {
+  const statusClasses = {
+    todo: "bg-yellow-100 text-yellow-800",
+    "in-progress": "bg-blue-100 text-blue-800",
+    done: "bg-green-100 text-green-800",
+  };
+
   return (
-    <Card className="flex flex-col justify-between h-52 w-full max-w-[250px]">
-      <CardHeader className="flex flex-row justify-between items-start pb-2">
-        <CardTitle className="text-base">{title}</CardTitle>
-        <span
-          className={`px-2 py-0.5 rounded-full text-xs font-medium capitalize ${
-            status === "todo"
-              ? "bg-yellow-100 text-yellow-800"
-              : status === "in-progress"
-              ? "bg-blue-100 text-blue-800"
-              : "bg-green-100 text-green-800"
-          }`}
-        >
-          {status}
-        </span>
-      </CardHeader>
-      <CardContent className="flex-1 flex flex-col justify-between">
-        {description && (
-          <p className="text-sm text-gray-600 mb-1 line-clamp-2">
-            {description}
-          </p>
-        )}
+    <Card className="w-full max-w-[250px] flex flex-col shadow-md rounded-xl border border-gray-200">
+      <CardHeader className="flex flex-col items-start gap-2 pb-0">
+        <div className="flex w-full justify-between items-start">
+          <CardTitle className="text-sm font-semibold">{title}</CardTitle>
+          <span
+            className={`px-2 py-0.5 rounded-full text-xs font-semibold capitalize ${statusClasses[status]}`}
+          >
+            {status}
+          </span>
+        </div>
         {dueDate && (
-          <p className="text-xs text-gray-500 mb-2">
+          <p className="text-xs text-gray-500">
             Due: {new Date(dueDate).toLocaleDateString()}
           </p>
+        )}
+      </CardHeader>
+
+      <CardContent className="flex flex-col flex-1 gap-3 mt-2">
+        {description && (
+          <p className="text-sm text-gray-600 line-clamp-3">{description}</p>
         )}
         <div className="flex justify-end gap-2 mt-auto">
           <Button variant="outline" size="sm" onClick={onEdit}>
