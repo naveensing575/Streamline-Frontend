@@ -9,7 +9,7 @@ const Login = () => {
   const onLogin = async (email: string, password: string) => {
     try {
       await handleLogin(email, password)
-      navigate("/") // Go to Dashboard after login
+      navigate("/")
     } catch (err) {
       console.error(err)
       // TODO: Show error toast

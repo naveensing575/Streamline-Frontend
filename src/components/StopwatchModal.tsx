@@ -27,7 +27,7 @@ export default function StopwatchModal() {
   const minuteRef = useRef<HTMLInputElement>(null);
   const secondRef = useRef<HTMLInputElement>(null);
 
-  // Countdown - KEEP isRunning true so alarm can play
+  // Countdown effect
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
     if (isRunning && timeLeft > 0) {
@@ -40,7 +40,7 @@ export default function StopwatchModal() {
     };
   }, [isRunning, timeLeft]);
 
-  // Display sync
+  // Update display
   useEffect(() => {
     const hrs = String(Math.floor(timeLeft / 3600)).padStart(2, "0");
     const mins = String(Math.floor((timeLeft % 3600) / 60)).padStart(2, "0");
@@ -50,7 +50,7 @@ export default function StopwatchModal() {
     setSeconds(secs);
   }, [timeLeft]);
 
-  // ✅ Play alarm when timeLeft === 0 AND isRunning
+  // Play alarm when timer hits zero
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -61,7 +61,7 @@ export default function StopwatchModal() {
     }
   }, [timeLeft, isRunning]);
 
-  // ✅ Stop alarm if paused/reset
+  // Stop alarm when paused/reset
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -126,76 +126,102 @@ export default function StopwatchModal() {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <img src={StopwatchIcon} alt="Open Stopwatch" className="w-12 h-12 cursor-pointer hover:scale-110 transition" />
-      </DialogTrigger>
-      <DialogContent className="bg-[#1a1a1a] text-gray-100 rounded-lg p-6">
-        <DialogHeader>
-          <DialogTitle className="text-xl font-semibold text-amber-400">Focus Timer</DialogTitle>
-        </DialogHeader>
+    <>
+      {/* ✅ AUDIO: stays mounted so alarm works even if modal is closed */}
+      <audio ref={audioRef} src={timerSound} preload="auto" />
 
-        {/* ✅ Audio */}
-        <audio ref={audioRef} src={timerSound} preload="auto" />
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <img
+            src={StopwatchIcon}
+            alt="Open Stopwatch"
+            className="w-12 h-12 cursor-pointer hover:scale-110 transition"
+          />
+        </DialogTrigger>
+        <DialogContent className="bg-[#1a1a1a] text-gray-100 rounded-lg p-6">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-semibold text-amber-400">
+              Focus Timer
+            </DialogTitle>
+          </DialogHeader>
 
-        <div className="flex flex-col items-center gap-6">
-          <div className="flex items-center text-5xl font-mono text-green-400">
-            <input
-              ref={hourRef}
-              type="number"
-              min="0"
-              className="input-no-spinner w-20 bg-transparent text-center outline-none"
-              value={hours}
-              onChange={handleHourChange}
-              onKeyDown={handleKeyPress}
-              onFocus={(e) => e.target.select()}
-              onBlur={() => setHours((v) => v.padStart(2, "0"))}
-            />
-            :
-            <input
-              ref={minuteRef}
-              type="number"
-              min="0"
-              className="input-no-spinner w-20 bg-transparent text-center outline-none"
-              value={minutes}
-              onChange={handleMinuteChange}
-              onKeyDown={handleKeyPress}
-              onFocus={(e) => e.target.select()}
-              onBlur={() => setMinutes((v) => v.padStart(2, "0"))}
-            />
-            :
-            <input
-              ref={secondRef}
-              type="number"
-              min="0"
-              className="input-no-spinner w-20 bg-transparent text-center outline-none"
-              value={seconds}
-              onChange={handleSecondChange}
-              onKeyDown={handleKeyPress}
-              onFocus={(e) => e.target.select()}
-              onBlur={() => setSeconds((v) => v.padStart(2, "0"))}
-            />
+          <div className="flex flex-col items-center gap-6">
+            <div className="flex items-center text-5xl font-mono text-green-400">
+              <input
+                ref={hourRef}
+                type="number"
+                min="0"
+                className="input-no-spinner w-20 bg-transparent text-center outline-none"
+                value={hours}
+                onChange={handleHourChange}
+                onKeyDown={handleKeyPress}
+                onFocus={(e) => e.target.select()}
+                onBlur={() => setHours((v) => v.padStart(2, "0"))}
+              />
+              :
+              <input
+                ref={minuteRef}
+                type="number"
+                min="0"
+                className="input-no-spinner w-20 bg-transparent text-center outline-none"
+                value={minutes}
+                onChange={handleMinuteChange}
+                onKeyDown={handleKeyPress}
+                onFocus={(e) => e.target.select()}
+                onBlur={() => setMinutes((v) => v.padStart(2, "0"))}
+              />
+              :
+              <input
+                ref={secondRef}
+                type="number"
+                min="0"
+                className="input-no-spinner w-20 bg-transparent text-center outline-none"
+                value={seconds}
+                onChange={handleSecondChange}
+                onKeyDown={handleKeyPress}
+                onFocus={(e) => e.target.select()}
+                onBlur={() => setSeconds((v) => v.padStart(2, "0"))}
+              />
+            </div>
+
+            <div className="flex gap-2">
+              <Button
+                className="bg-amber-500 hover:bg-amber-600 text-black"
+                onClick={() => addTime(30)}
+              >
+                +30s
+              </Button>
+              <Button
+                className="bg-amber-500 hover:bg-amber-600 text-black"
+                onClick={() => addTime(60)}
+              >
+                +1m
+              </Button>
+              <Button
+                className="bg-amber-500 hover:bg-amber-600 text-black"
+                onClick={() => addTime(300)}
+              >
+                +5m
+              </Button>
+            </div>
+
+            <div className="flex gap-2">
+              <Button
+                className="bg-green-500 hover:bg-green-600 text-black"
+                onClick={() => {
+                  setTimeFromInput();
+                  setIsRunning(!isRunning);
+                }}
+              >
+                {isRunning ? "Pause" : "Start"}
+              </Button>
+              <Button variant="outline" onClick={reset} className="text-black">
+                Reset
+              </Button>
+            </div>
           </div>
-
-          <div className="flex gap-2">
-            <Button className="bg-amber-500 hover:bg-amber-600 text-black" onClick={() => addTime(30)}>+30s</Button>
-            <Button className="bg-amber-500 hover:bg-amber-600 text-black" onClick={() => addTime(60)}>+1m</Button>
-            <Button className="bg-amber-500 hover:bg-amber-600 text-black" onClick={() => addTime(300)}>+5m</Button>
-          </div>
-
-          <div className="flex gap-2">
-            <Button className="bg-green-500 hover:bg-green-600 text-black" onClick={() => {
-              setTimeFromInput();
-              setIsRunning(!isRunning);
-            }}>
-              {isRunning ? "Pause" : "Start"}
-            </Button>
-            <Button variant="outline" onClick={reset} className="text-black">
-              Reset
-            </Button>
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
