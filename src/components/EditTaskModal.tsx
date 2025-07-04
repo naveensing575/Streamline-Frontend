@@ -12,6 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { type Task } from "@/components/TaskList"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useEffect } from "react"
 
 const formSchema = z.object({
   title: z.string(),
@@ -42,6 +43,17 @@ export default function EditTaskModal({
       dueDate: task.dueDate ? task.dueDate.slice(0, 10) : "",
     },
   })
+
+  useEffect(() => {
+    if (task) {
+      form.reset({
+        title: task.title,
+        description: task.description,
+        status: task.status,
+        dueDate: task.dueDate ? task.dueDate.slice(0, 10) : "",
+      });
+    }
+  }, [task, form]);
 
   const handleSubmit = (values: z.infer<typeof formSchema>) => {
     onSave({
