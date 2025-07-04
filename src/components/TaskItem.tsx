@@ -1,12 +1,12 @@
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 
 interface TaskItemProps {
-  title: string
-  description?: string
-  status: "todo" | "in-progress" | "done"
-  dueDate?: string
-  onEdit: () => void
-  onDelete: () => void
+  title: string;
+  description?: string;
+  status: "todo" | "in-progress" | "done";
+  dueDate?: string;
+  onEdit: () => void;
+  onDelete: () => void;
 }
 
 export default function TaskItem({
@@ -18,11 +18,11 @@ export default function TaskItem({
   onDelete,
 }: TaskItemProps) {
   return (
-    <div className="w-full rounded-lg border p-4 shadow-sm hover:shadow-md transition">
-      <div className="flex justify-between items-center mb-2">
-        <h3 className="text-lg font-semibold">{title}</h3>
+    <div className="rounded-xl border p-4 shadow-sm hover:shadow-md transition bg-white flex flex-col justify-between h-full">
+      <div className="flex justify-between items-start mb-2">
+        <h3 className="text-base font-semibold text-gray-800">{title}</h3>
         <span
-          className={`px-2 py-1 rounded text-xs font-medium ${
+          className={`px-2 py-0.5 rounded-full text-xs font-medium capitalize ${
             status === "todo"
               ? "bg-yellow-100 text-yellow-800"
               : status === "in-progress"
@@ -34,12 +34,14 @@ export default function TaskItem({
         </span>
       </div>
       {description && (
-        <p className="text-sm text-gray-600 mb-2">{description}</p>
+        <p className="text-sm text-gray-600 mb-2 line-clamp-3">{description}</p>
       )}
       {dueDate && (
-        <p className="text-xs text-gray-500">Due: {new Date(dueDate).toLocaleDateString()}</p>
+        <p className="text-xs text-gray-500 mb-4">
+          Due: {new Date(dueDate).toLocaleDateString()}
+        </p>
       )}
-      <div className="flex gap-2 mt-4">
+      <div className="flex justify-end gap-2 mt-auto">
         <Button variant="outline" size="sm" onClick={onEdit}>
           Edit
         </Button>
@@ -48,5 +50,5 @@ export default function TaskItem({
         </Button>
       </div>
     </div>
-  )
+  );
 }
