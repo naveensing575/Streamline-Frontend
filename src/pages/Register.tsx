@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom"
 import useAuth from "@/hooks/useAuth"
 import RegisterForm from "@/components/RegisterForm"
+import { toast } from "sonner"
 
 export default function Register() {
   const { handleRegister } = useAuth()
@@ -10,9 +11,9 @@ export default function Register() {
     try {
       await handleRegister(name, email, password)
       navigate("/") // Go to Dashboard after successful register
-    } catch (err) {
-      console.error(err)
-      // TODO: Show error toast
+    } catch (err: any) {
+      console.error(err.response?.data?.message)
+      toast.error(err.response?.data?.message) 
     }
   }
 
