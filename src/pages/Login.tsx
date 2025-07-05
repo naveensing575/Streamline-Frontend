@@ -14,8 +14,8 @@ const Login = () => {
       toast.success(`Welcome back ${user} 👋.`)
       navigate("/")
     } catch (err: any) {
-      console.error(err)
-      toast.error(err)
+      console.error(err.response?.data?.message)
+      toast.error(err.response?.data?.message)
     }
   }
 
