@@ -145,40 +145,32 @@ function DroppableColumn({
   );
 }
 
-function SortableTask({
-  task,
-  onEdit,
-  onDelete,
-}: {
+function SortableTask({ task, onEdit, onDelete }: {
   task: Task;
   onEdit: (task: Task) => void;
   onDelete: (taskId: string) => void;
 }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+  const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: task._id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    zIndex: isDragging ? 50 : "auto",
   };
 
   return (
-    <div
-      ref={setNodeRef}
-      {...attributes}
-      {...listeners}
-      style={style}
-      className={`mb-2 ${isDragging ? "opacity-50" : ""}`}
-    >
+    <div ref={setNodeRef} style={style} {...attributes} className="mb-2">
       <TaskItem
         title={task.title}
         description={task.description}
         status={task.status}
         dueDate={task.dueDate}
+        dragListeners={listeners}
         onEdit={() => onEdit(task)}
         onDelete={() => onDelete(task._id)}
       />
     </div>
   );
 }
+
+

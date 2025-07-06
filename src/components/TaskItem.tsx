@@ -6,6 +6,7 @@ interface TaskItemProps {
   description?: string;
   status: "todo" | "in-progress" | "done";
   dueDate?: string;
+  dragListeners?: Record<string, any>;
   onEdit: () => void;
   onDelete: () => void;
 }
