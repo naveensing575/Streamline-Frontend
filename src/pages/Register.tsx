@@ -10,7 +10,7 @@ export default function Register() {
   const onRegister = async (name: string, email: string, password: string) => {
     try {
       await handleRegister(name, email, password)
-      navigate("/") // Go to Dashboard after successful register
+      navigate("/")
     } catch (err: any) {
       console.error(err.response?.data?.message)
       toast.error(err.response?.data?.message) 

@@ -11,7 +11,7 @@ const Login = () => {
     const user = email.split('@')[0]
     try {
       await handleLogin(email, password)
-      toast.success(`Welcome back ${user} 👋.`)
+      toast.success(`Welcome back ${user} 👋`)
       navigate("/")
     } catch (err: any) {
       console.error(err.response?.data?.message)
