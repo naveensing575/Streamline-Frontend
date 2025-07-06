@@ -4,35 +4,35 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
-import { type Task } from "@/components/TaskList"
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { type Task } from "@/components/TaskList";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { useEffect } from "react"
+} from "@/components/ui/select";
+import { useEffect } from "react";
 
 const formSchema = z.object({
   title: z.string().min(1, { message: "Title is required" }),
   description: z.string().optional(),
   status: z.enum(["todo", "in-progress", "done"]),
   dueDate: z.string().min(1, { message: "Due date is required" }),
-})
+});
 
 type EditTaskModalProps = {
-  open: boolean
-  setOpen: (open: boolean) => void
-  task: Task
-  onSave: (updates: Partial<Task>) => void
-}
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  task: Task;
+  onSave: (updates: Partial<Task>) => void;
+};
 
 export default function EditTaskModal({
   open,
@@ -55,7 +55,7 @@ export default function EditTaskModal({
       status: task.status,
       dueDate: task.dueDate ? task.dueDate.slice(0, 10) : "",
     },
-  })
+  });
 
   useEffect(() => {
     if (task) {
@@ -64,9 +64,9 @@ export default function EditTaskModal({
         description: task.description,
         status: task.status,
         dueDate: task.dueDate ? task.dueDate.slice(0, 10) : "",
-      })
+      });
     }
-  }, [task, reset])
+  }, [task, reset]);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     const cleaned = {
@@ -74,17 +74,17 @@ export default function EditTaskModal({
       description: values.description?.trim() || "",
       status: values.status,
       dueDate: values.dueDate?.trim() || "",
-    }
+    };
 
     if (!cleaned.title || !cleaned.status || !cleaned.dueDate) {
-      console.warn("Please fill in all required fields.")
-      return
+      console.warn("Please fill in all required fields.");
+      return;
     }
 
-    const dueDateParsed = new Date(cleaned.dueDate)
+    const dueDateParsed = new Date(cleaned.dueDate);
     if (isNaN(dueDateParsed.getTime())) {
-      console.warn("Invalid due date format.")
-      return
+      console.warn("Invalid due date format.");
+      return;
     }
 
     onSave({
@@ -92,18 +92,18 @@ export default function EditTaskModal({
       description: cleaned.description || undefined,
       status: cleaned.status as "todo" | "in-progress" | "done",
       dueDate: dueDateParsed,
-    })
+    });
 
-    reset()
-    setOpen(false)
-  }
+    reset();
+    setOpen(false);
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent>
+      <DialogContent className="w-[90vw] max-w-md sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Edit Task</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-lg sm:text-xl">Edit Task</DialogTitle>
+          <DialogDescription className="text-sm">
             Update your task details below.
           </DialogDescription>
         </DialogHeader>
@@ -133,7 +133,9 @@ export default function EditTaskModal({
             >
               <SelectTrigger
                 className={
-                  errors.status ? "border-red-500 focus-visible:ring-red-500" : ""
+                  errors.status
+                    ? "border-red-500 focus-visible:ring-red-500"
+                    : ""
                 }
               >
                 <SelectValue placeholder="Select status" />
@@ -166,11 +168,11 @@ export default function EditTaskModal({
             )}
           </div>
 
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full min-h-[40px]">
             Save Changes
           </Button>
         </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

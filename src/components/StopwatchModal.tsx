@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect, useRef } from "react";
 import {
   Dialog,
@@ -27,7 +25,6 @@ export default function StopwatchModal() {
   const minuteRef = useRef<HTMLInputElement>(null);
   const secondRef = useRef<HTMLInputElement>(null);
 
-  // Countdown effect
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
     if (isRunning && timeLeft > 0) {
@@ -40,7 +37,6 @@ export default function StopwatchModal() {
     };
   }, [isRunning, timeLeft]);
 
-  // Update display
   useEffect(() => {
     const hrs = String(Math.floor(timeLeft / 3600)).padStart(2, "0");
     const mins = String(Math.floor((timeLeft % 3600) / 60)).padStart(2, "0");
@@ -50,7 +46,6 @@ export default function StopwatchModal() {
     setSeconds(secs);
   }, [timeLeft]);
 
-  // Play alarm when timer hits zero
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -61,7 +56,6 @@ export default function StopwatchModal() {
     }
   }, [timeLeft, isRunning]);
 
-  // Stop alarm when paused/reset
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -127,7 +121,6 @@ export default function StopwatchModal() {
 
   return (
     <>
-      {/* ✅ AUDIO: stays mounted so alarm works even if modal is closed */}
       <audio ref={audioRef} src={timerSound} preload="auto" />
 
       <Dialog open={open} onOpenChange={setOpen}>
@@ -138,20 +131,20 @@ export default function StopwatchModal() {
             className="w-12 h-12 cursor-pointer hover:scale-110 transition"
           />
         </DialogTrigger>
-        <DialogContent className="bg-[#1a1a1a] text-gray-100 rounded-lg p-6">
+        <DialogContent className="w-[90vw] max-w-md sm:max-w-lg bg-[#1a1a1a] text-gray-100 rounded-lg p-6">
           <DialogHeader>
-            <DialogTitle className="text-xl font-semibold text-amber-400">
+            <DialogTitle className="text-lg sm:text-xl font-semibold text-amber-400">
               Focus Timer
             </DialogTitle>
           </DialogHeader>
 
           <div className="flex flex-col items-center gap-6">
-            <div className="flex items-center text-5xl font-mono text-green-400">
+            <div className="flex items-center text-4xl sm:text-5xl font-mono text-green-400">
               <input
                 ref={hourRef}
                 type="number"
                 min="0"
-                className="input-no-spinner w-20 bg-transparent text-center outline-none"
+                className="input-no-spinner w-16 sm:w-20 bg-transparent text-center outline-none"
                 value={hours}
                 onChange={handleHourChange}
                 onKeyDown={handleKeyPress}
@@ -163,7 +156,7 @@ export default function StopwatchModal() {
                 ref={minuteRef}
                 type="number"
                 min="0"
-                className="input-no-spinner w-20 bg-transparent text-center outline-none"
+                className="input-no-spinner w-16 sm:w-20 bg-transparent text-center outline-none"
                 value={minutes}
                 onChange={handleMinuteChange}
                 onKeyDown={handleKeyPress}
@@ -175,7 +168,7 @@ export default function StopwatchModal() {
                 ref={secondRef}
                 type="number"
                 min="0"
-                className="input-no-spinner w-20 bg-transparent text-center outline-none"
+                className="input-no-spinner w-16 sm:w-20 bg-transparent text-center outline-none"
                 value={seconds}
                 onChange={handleSecondChange}
                 onKeyDown={handleKeyPress}
@@ -184,30 +177,30 @@ export default function StopwatchModal() {
               />
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex flex-wrap justify-center gap-2 w-full">
               <Button
-                className="bg-amber-500 hover:bg-amber-600 text-black"
+                className="flex-1 min-w-[80px] bg-amber-500 hover:bg-amber-600 text-black"
                 onClick={() => addTime(30)}
               >
                 +30s
               </Button>
               <Button
-                className="bg-amber-500 hover:bg-amber-600 text-black"
+                className="flex-1 min-w-[80px] bg-amber-500 hover:bg-amber-600 text-black"
                 onClick={() => addTime(60)}
               >
                 +1m
               </Button>
               <Button
-                className="bg-amber-500 hover:bg-amber-600 text-black"
+                className="flex-1 min-w-[80px] bg-amber-500 hover:bg-amber-600 text-black"
                 onClick={() => addTime(300)}
               >
                 +5m
               </Button>
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2 w-full">
               <Button
-                className="bg-green-500 hover:bg-green-600 text-black"
+                className="flex-1 min-h-[40px] bg-green-500 hover:bg-green-600 text-black"
                 onClick={() => {
                   setTimeFromInput();
                   setIsRunning(!isRunning);
@@ -215,7 +208,11 @@ export default function StopwatchModal() {
               >
                 {isRunning ? "Pause" : "Start"}
               </Button>
-              <Button variant="outline" onClick={reset} className="text-black">
+              <Button
+                variant="outline"
+                onClick={reset}
+                className="flex-1 min-h-[40px] text-black"
+              >
                 Reset
               </Button>
             </div>

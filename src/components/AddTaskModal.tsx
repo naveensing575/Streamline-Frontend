@@ -1,6 +1,4 @@
-"use client"
-
-import * as React from "react"
+import * as React from "react";
 import {
   Dialog,
   DialogContent,
@@ -8,38 +6,38 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 
 const formSchema = z.object({
   title: z.string().min(1, { message: "Title is required" }),
   description: z.string().optional(),
   status: z.enum(["todo", "in-progress", "done"]),
   dueDate: z.string().min(1, { message: "Due date is required" }),
-})
+});
 
 export default function AddTaskModal({
   onAddTask,
 }: {
   onAddTask: (data: {
-    title: string
-    description?: string
-    status: "todo" | "in-progress" | "done"
-    dueDate?: Date
-  }) => void
+    title: string;
+    description?: string;
+    status: "todo" | "in-progress" | "done";
+    dueDate?: Date;
+  }) => void;
 }) {
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = React.useState(false);
 
   const {
     register,
@@ -56,7 +54,7 @@ export default function AddTaskModal({
       status: "todo",
       dueDate: "",
     },
-  })
+  });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     const cleaned = {
@@ -64,17 +62,17 @@ export default function AddTaskModal({
       description: values.description?.trim() || "",
       status: values.status,
       dueDate: values.dueDate?.trim() || "",
-    }
+    };
 
     if (!cleaned.title || !cleaned.status || !cleaned.dueDate) {
-      console.warn("Please fill in all required fields.")
-      return
+      console.warn("Please fill in all required fields.");
+      return;
     }
 
-    const dueDateParsed = new Date(cleaned.dueDate)
+    const dueDateParsed = new Date(cleaned.dueDate);
     if (isNaN(dueDateParsed.getTime())) {
-      console.warn("Invalid due date format.")
-      return
+      console.warn("Invalid due date format.");
+      return;
     }
 
     onAddTask({
@@ -82,21 +80,23 @@ export default function AddTaskModal({
       description: cleaned.description || undefined,
       status: cleaned.status as "todo" | "in-progress" | "done",
       dueDate: dueDateParsed,
-    })
+    });
 
-    reset()
-    setOpen(false)
-  }
+    reset();
+    setOpen(false);
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>Add Task</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="w-[90vw] max-w-md sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Create a New Task</DialogTitle>
-          <DialogDescription>Add task details below.</DialogDescription>
+          <DialogTitle className="text-lg sm:text-xl">Create a New Task</DialogTitle>
+          <DialogDescription className="text-sm">
+            Add task details below.
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
@@ -147,11 +147,11 @@ export default function AddTaskModal({
             )}
           </div>
 
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full min-h-[40px]">
             Create Task
           </Button>
         </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

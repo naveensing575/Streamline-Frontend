@@ -1,33 +1,39 @@
-import type { User } from "@/types/User"
-import { Button } from "@/components/ui/button"
-import { Link, useNavigate } from "react-router-dom"
-import { toast } from "sonner"
+import type { User } from "@/types/User";
+import { Button } from "@/components/ui/button";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 interface NavbarProps {
-  user: User
-  logout: () => void
+  user: User;
+  logout: () => void;
 }
 
 export default function Navbar({ user, logout }: NavbarProps) {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout()
-    toast.success("👋 Logged out successfully.")
-    navigate("/login")
-  }
+    logout();
+    toast.success("👋 Logged out successfully.");
+    navigate("/login");
+  };
 
   return (
-    <nav className="flex items-center justify-between px-6 py-4 bg-gray-100 border-b">
-      <Link to="/" className="text-xl font-bold">
+    <nav className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4 px-4 py-4 bg-gray-100 border-b">
+      <Link to="/" className="text-lg sm:text-xl font-bold">
         TaskFlowAI
       </Link>
-      <div className="flex items-center gap-4">
-        <span className="text-gray-700">Hello, {user?.name}</span>
-        <Button variant="outline" onClick={handleLogout}>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 w-full sm:w-auto">
+        <span className="text-sm sm:text-base text-gray-700">
+          Hello, {user?.name}
+        </span>
+        <Button
+          variant="outline"
+          onClick={handleLogout}
+          className="w-full sm:w-auto min-h-[40px]"
+        >
           Logout
         </Button>
       </div>
     </nav>
-  )
+  );
 }

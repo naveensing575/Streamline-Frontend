@@ -1,12 +1,13 @@
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
-import TaskList, { type Task } from "@/components/TaskList";
+import Board from "@/components/Board";
 import AddTaskModal from "@/components/AddTaskModal";
 import EditTaskModal from "@/components/EditTaskModal";
-import StopwatchModal from "@/components/StopwatchModal"; // ✅ NEW
+import StopwatchModal from "@/components/StopwatchModal";
 import useAuth from "@/hooks/useAuth";
 import useTasks from "@/hooks/useTasks";
 import { toast } from "sonner";
+import { type Task } from "@/components/TaskList";
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
@@ -17,7 +18,6 @@ export default function Dashboard() {
 
   if (!user) return null;
 
-  // ADD TASK
   const handleAddTask = async (data: {
     title: string;
     description?: string;
@@ -33,14 +33,11 @@ export default function Dashboard() {
     }
   };
 
-  // OPEN EDIT MODAL
   const handleEdit = (task: Task) => {
-    console.log("Editing task:", task);
     setSelectedTask(task);
     setEditOpen(true);
   };
 
-  // SAVE EDIT
   const handleSaveEdit = async (updates: Partial<Task>) => {
     if (selectedTask) {
       const safeUpdates = {
@@ -74,7 +71,6 @@ export default function Dashboard() {
     }
   };
 
-  // DELETE TASK
   const handleDeleteTask = async (taskId: string) => {
     try {
       await removeTask(taskId);
@@ -89,15 +85,13 @@ export default function Dashboard() {
     <>
       <Navbar user={user} logout={logout} />
 
-      <main className="max-w-4xl mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold">Welcome, {user.name}</h1>
-
-          {/* Add task button */}
-          <div className="flex items-center gap-4">
+      <main className="max-w-7xl mx-auto px-2 sm:px-4 py-6 sm:py-8">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <h1 className="text-xl sm:text-2xl font-bold">
+            Welcome, {user.name}
+          </h1>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
             <AddTaskModal onAddTask={handleAddTask} />
-
-            {/* ✅ Stopwatch clock icon */}
             <StopwatchModal />
           </div>
         </div>
@@ -105,10 +99,21 @@ export default function Dashboard() {
         {loading ? (
           <p>Loading tasks...</p>
         ) : (
-          <TaskList
+          <Board
             tasks={tasks}
             onEdit={handleEdit}
             onDelete={handleDeleteTask}
+            onStatusChange={async (taskId, newStatus) => {
+              try {
+                await editTask(taskId, { status: newStatus });
+                toast.success(`✅ Task status updated to ${newStatus}`);
+              } catch (err) {
+                console.error(err);
+                toast.error(
+                  "❌ Failed to update task status. Please try again."
+                );
+              }
+            }}
           />
         )}
 

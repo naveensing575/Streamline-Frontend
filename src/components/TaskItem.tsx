@@ -25,10 +25,12 @@ export default function TaskItem({
   };
 
   return (
-    <Card className="w-full max-w-[250px] flex flex-col shadow-md rounded-xl border border-gray-200">
+    <Card className="w-full flex flex-col shadow-md rounded-xl border border-gray-200">
       <CardHeader className="flex flex-col items-start gap-2 pb-0">
         <div className="flex w-full justify-between items-start">
-          <CardTitle className="text-sm font-semibold">{title}</CardTitle>
+          <CardTitle className="text-sm sm:text-base font-semibold">
+            {title}
+          </CardTitle>
           <span
             className={`px-2 py-0.5 rounded-full text-xs font-semibold capitalize ${statusClasses[status]}`}
           >
@@ -44,13 +46,25 @@ export default function TaskItem({
 
       <CardContent className="flex flex-col flex-1 gap-3 mt-2">
         {description && (
-          <p className="text-sm text-gray-600 line-clamp-3">{description}</p>
+          <p className="text-sm sm:text-base text-gray-600 line-clamp-3">
+            {description}
+          </p>
         )}
-        <div className="flex justify-end gap-2 mt-auto">
-          <Button variant="outline" size="sm" onClick={onEdit}>
+        <div className="flex flex-col xs:flex-row justify-end gap-2 mt-auto">
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-full xs:w-auto min-h-[40px]"
+            onClick={onEdit}
+          >
             Edit
           </Button>
-          <Button variant="destructive" size="sm" onClick={onDelete}>
+          <Button
+            variant="destructive"
+            size="sm"
+            className="w-full xs:w-auto min-h-[40px]"
+            onClick={onDelete}
+          >
             Delete
           </Button>
         </div>
