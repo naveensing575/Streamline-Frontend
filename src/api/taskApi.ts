@@ -26,3 +26,8 @@ export const deleteTask = async (taskId: string) => {
   const res = await axiosInstance.delete(`/tasks/${taskId}`);
   return res.data;
 };
+
+export const breakdownTask = async (taskId: string) => {
+  const res = await axiosInstance.post(`/tasks/${taskId}/breakdown`);
+  return res.data.subTasks as string[];
+};

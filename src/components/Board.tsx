@@ -20,11 +20,13 @@ import { useState } from "react";
 interface BoardProps {
   tasks: Task[];
   onEdit: (task: Task) => void;
-  onDelete: (taskId: string) => void;
+  onRequestDelete: (taskId: string) => void;
   onStatusChange: (
     taskId: string,
     newStatus: "todo" | "in-progress" | "done"
   ) => void;
+  onBreakdown: (taskId: string) => void;
+  loadingTaskId: string | null;
 }
 
 const statuses: Array<"todo" | "in-progress" | "done"> = [
@@ -36,8 +38,10 @@ const statuses: Array<"todo" | "in-progress" | "done"> = [
 export default function Board({
   tasks,
   onEdit,
-  onDelete,
+  onRequestDelete,
   onStatusChange,
+  onBreakdown,
+  loadingTaskId,
 }: BoardProps) {
   const sensors = useSensors(useSensor(PointerSensor));
   const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
@@ -89,7 +93,10 @@ export default function Board({
             id={status}
             tasks={tasks.filter((task) => task.status === status)}
             onEdit={onEdit}
-            onDelete={onDelete}
+            onRequestDelete={onRequestDelete}
+            onBreakdown={onBreakdown}
+            loadingTaskId={loadingTaskId}
+            activeTaskId={activeTaskId} // ✅ pass it down
           />
         ))}
       </div>
@@ -98,8 +105,12 @@ export default function Board({
         {activeTaskId ? (
           <TaskItem
             {...tasks.find((task) => task._id === activeTaskId)!}
+            dragListeners={{}}
+            dragAttributes={{}}
             onEdit={() => {}}
-            onDelete={() => {}}
+            onRequestDelete={() => {}}
+            onBreakdown={() => onBreakdown(activeTaskId)}
+            isBreakingDown={loadingTaskId === activeTaskId}
           />
         ) : null}
       </DragOverlay>
@@ -111,12 +122,18 @@ function DroppableColumn({
   id,
   tasks,
   onEdit,
-  onDelete,
+  onRequestDelete,
+  onBreakdown,
+  loadingTaskId,
+  activeTaskId,
 }: {
   id: string;
   tasks: Task[];
   onEdit: (task: Task) => void;
-  onDelete: (taskId: string) => void;
+  onRequestDelete: (taskId: string) => void;
+  onBreakdown: (taskId: string) => void;
+  loadingTaskId: string | null;
+  activeTaskId: string | null;
 }) {
   const { setNodeRef } = useDroppable({ id });
 
@@ -137,7 +154,10 @@ function DroppableColumn({
             key={task._id}
             task={task}
             onEdit={onEdit}
-            onDelete={onDelete}
+            onRequestDelete={onRequestDelete}
+            onBreakdown={onBreakdown}
+            loadingTaskId={loadingTaskId}
+            activeTaskId={activeTaskId} // ✅ pass it down
           />
         ))}
       </SortableContext>
@@ -145,10 +165,20 @@ function DroppableColumn({
   );
 }
 
-function SortableTask({ task, onEdit, onDelete }: {
+function SortableTask({
+  task,
+  onEdit,
+  onRequestDelete,
+  onBreakdown,
+  loadingTaskId,
+  activeTaskId,
+}: {
   task: Task;
   onEdit: (task: Task) => void;
-  onDelete: (taskId: string) => void;
+  onRequestDelete: (taskId: string) => void;
+  onBreakdown: (taskId: string) => void;
+  loadingTaskId: string | null;
+  activeTaskId: string | null;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: task._id });
@@ -158,19 +188,29 @@ function SortableTask({ task, onEdit, onDelete }: {
     transition,
   };
 
+  const isDragging = activeTaskId === task._id;
+
   return (
-    <div ref={setNodeRef} style={style} {...attributes} className="mb-2">
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      className={`mb-2 ${isDragging ? "opacity-50" : ""}`} // ✅ light placeholder style
+    >
       <TaskItem
         title={task.title}
         description={task.description}
         status={task.status}
         dueDate={task.dueDate}
+        subTasks={task.subTasks}
         dragListeners={listeners}
+        dragAttributes={attributes}
         onEdit={() => onEdit(task)}
-        onDelete={() => onDelete(task._id)}
+        onRequestDelete={() => onRequestDelete(task._id)}
+        onBreakdown={() => onBreakdown(task._id)}
+        isBreakingDown={loadingTaskId === task._id}
       />
     </div>
   );
 }
-
 

@@ -1,14 +1,25 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { GripVertical, MoreHorizontal, Loader2 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 
 interface TaskItemProps {
   title: string;
   description?: string;
   status: "todo" | "in-progress" | "done";
   dueDate?: string;
+  subTasks?: string[];
   dragListeners?: Record<string, any>;
+  dragAttributes?: Record<string, any>;
   onEdit: () => void;
-  onDelete: () => void;
+  onBreakdown?: () => void;
+  isBreakingDown?: boolean;
+  onRequestDelete: () => void;
 }
 
 export default function TaskItem({
@@ -16,8 +27,13 @@ export default function TaskItem({
   description,
   status,
   dueDate,
+  subTasks,
+  dragListeners,
+  dragAttributes,
   onEdit,
-  onDelete,
+  onBreakdown,
+  isBreakingDown,
+  onRequestDelete,
 }: TaskItemProps) {
   const statusClasses = {
     todo: "bg-yellow-100 text-yellow-800",
@@ -25,18 +41,52 @@ export default function TaskItem({
     done: "bg-green-100 text-green-800",
   };
 
+  const canBreakDown = onBreakdown && !subTasks?.length;
+
   return (
     <Card className="w-full flex flex-col shadow-md rounded-xl border border-gray-200">
       <CardHeader className="flex flex-col items-start gap-2 pb-0">
         <div className="flex w-full justify-between items-start">
-          <CardTitle className="text-sm sm:text-base font-semibold">
-            {title}
-          </CardTitle>
-          <span
-            className={`px-2 py-0.5 rounded-full text-xs font-semibold capitalize ${statusClasses[status]}`}
+          <div
+            className="flex items-center gap-2"
+            {...dragListeners}
+            {...dragAttributes}
           >
-            {status}
-          </span>
+            <GripVertical className="w-5 h-5 text-gray-400 cursor-grab" />
+            <CardTitle className="text-sm sm:text-base font-semibold">
+              {title}
+            </CardTitle>
+          </div>
+          <div className="flex items-center gap-2">
+            <span
+              className={`px-2 py-0.5 rounded-full text-xs font-semibold capitalize ${statusClasses[status]}`}
+            >
+              {status}
+            </span>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={onEdit}>Edit</DropdownMenuItem>
+                <DropdownMenuItem onClick={onRequestDelete}>Delete</DropdownMenuItem>
+                {onBreakdown && (
+                  <DropdownMenuItem
+                    onClick={onBreakdown}
+                    disabled={!canBreakDown || isBreakingDown}
+                  >
+                    {isBreakingDown
+                      ? "Generating..."
+                      : subTasks?.length
+                      ? "Break Down (Done)"
+                      : "Break Down"}
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
         {dueDate && (
           <p className="text-xs text-gray-500">
@@ -51,24 +101,26 @@ export default function TaskItem({
             {description}
           </p>
         )}
-        <div className="flex flex-col xs:flex-row justify-end gap-2 mt-auto">
-          <Button
-            variant="outline"
-            size="sm"
-            className="w-full xs:w-auto min-h-[40px]"
-            onClick={onEdit}
-          >
-            Edit
-          </Button>
-          <Button
-            variant="destructive"
-            size="sm"
-            className="w-full xs:w-auto min-h-[40px]"
-            onClick={onDelete}
-          >
-            Delete
-          </Button>
-        </div>
+
+        {isBreakingDown && (
+          <div className="flex items-center gap-2 text-xs text-gray-500 mt-2">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            Breaking down task using AI...
+          </div>
+        )}
+
+        {!isBreakingDown && subTasks && subTasks.length > 0 && (
+          <div className="mt-2">
+            <p className="text-xs font-medium text-gray-700 mb-1">
+              {subTasks.length} Subtask{subTasks.length > 1 ? "s" : ""}
+            </p>
+            <ul className="text-xs text-gray-600 list-disc list-inside">
+              {subTasks.map((sub, i) => (
+                <li key={i}>{sub}</li>
+              ))}
+            </ul>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
