@@ -1,6 +1,7 @@
 import TaskItem from "./TaskItem"
 
 export interface Task {
+  subTasks: string[] | undefined
   _id: string
   title: string
   description?: string
@@ -11,10 +12,10 @@ export interface Task {
 interface TaskListProps {
   tasks: Task[]
   onEdit: (task: Task) => void
-  onDelete: (taskId: string) => void
+  onRequestDelete: (taskId: string) => void
 }
 
-export default function TaskList({ tasks, onEdit, onDelete }: TaskListProps) {
+export default function TaskList({ tasks, onEdit, onRequestDelete }: TaskListProps) {
   if (tasks.length === 0) {
     return (
       <div className="text-center text-gray-500 py-8">
@@ -33,7 +34,7 @@ export default function TaskList({ tasks, onEdit, onDelete }: TaskListProps) {
           status={task.status}
           dueDate={task.dueDate}
           onEdit={() => onEdit(task)}
-          onDelete={() => onDelete(task._id)}
+          onRequestDelete={() => onRequestDelete(task._id)}
         />
       ))}
     </div>

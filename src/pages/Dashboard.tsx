@@ -8,13 +8,34 @@ import useAuth from "@/hooks/useAuth";
 import useTasks from "@/hooks/useTasks";
 import { toast } from "sonner";
 import { type Task } from "@/components/TaskList";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
-  const { tasks, loading, addTask, editTask, removeTask } = useTasks();
+  const {
+    tasks,
+    loading,
+    addTask,
+    editTask,
+    removeTask,
+    generateSubTasks,
+    loadingTaskId,
+  } = useTasks();
 
   const [editOpen, setEditOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [taskIdToDelete, setTaskIdToDelete] = useState<string | null>(null);
 
   if (!user) return null;
 
@@ -27,8 +48,7 @@ export default function Dashboard() {
     try {
       await addTask(data);
       toast.success(`✅ "${data.title}" created!`);
-    } catch (err) {
-      console.error(err);
+    } catch {
       toast.error("❌ Failed to create task. Please try again.");
     }
   };
@@ -64,20 +84,27 @@ export default function Dashboard() {
         toast.success(`✏️ "${updatedTask.title}" updated!`);
         setEditOpen(false);
         setSelectedTask(null);
-      } catch (err) {
-        console.error(err);
+      } catch {
         toast.error("❌ Failed to update task. Please try again.");
       }
     }
   };
 
-  const handleDeleteTask = async (taskId: string) => {
+  const handleRequestDelete = (taskId: string) => {
+    setTaskIdToDelete(taskId);
+    setDeleteConfirmOpen(true);
+  };
+
+  const handleDeleteConfirmed = async () => {
+    if (!taskIdToDelete) return;
     try {
-      await removeTask(taskId);
+      await removeTask(taskIdToDelete);
       toast.success("🗑️ Task deleted successfully!");
-    } catch (err) {
-      console.error(err);
+    } catch {
       toast.error("❌ Failed to delete task. Please try again.");
+    } finally {
+      setDeleteConfirmOpen(false);
+      setTaskIdToDelete(null);
     }
   };
 
@@ -102,18 +129,17 @@ export default function Dashboard() {
           <Board
             tasks={tasks}
             onEdit={handleEdit}
-            onDelete={handleDeleteTask}
+            onRequestDelete={handleRequestDelete}
             onStatusChange={async (taskId, newStatus) => {
               try {
                 await editTask(taskId, { status: newStatus });
                 toast.success(`✅ Task status updated to ${newStatus}`);
-              } catch (err) {
-                console.error(err);
-                toast.error(
-                  "❌ Failed to update task status. Please try again."
-                );
+              } catch {
+                toast.error("❌ Failed to update task status. Please try again.");
               }
             }}
+            onBreakdown={generateSubTasks}
+            loadingTaskId={loadingTaskId}
           />
         )}
 
@@ -125,6 +151,27 @@ export default function Dashboard() {
             onSave={handleSaveEdit}
           />
         )}
+
+        <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+          <AlertDialogTrigger asChild />
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete this task?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently remove the task
+                and its data from your board.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={() => setDeleteConfirmOpen(false)}>
+                Cancel
+              </AlertDialogCancel>
+              <AlertDialogAction onClick={handleDeleteConfirmed}>
+                Yes, Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </main>
     </>
   );
