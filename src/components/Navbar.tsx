@@ -1,10 +1,10 @@
-import type { User } from "@/types/User";
+import type { IUser } from "@/types/User";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 interface NavbarProps {
-  user: User;
+  user: IUser;
   logout: () => void;
 }
 
@@ -22,12 +22,20 @@ export default function Navbar({ user, logout }: NavbarProps) {
       <Link to="/" className="text-lg sm:text-xl font-bold">
         TaskFlowAI
       </Link>
+
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 w-full sm:w-auto">
+        {user?.role === "admin" && (
+          <Button asChild variant="secondary" className="w-full sm:w-auto">
+            <Link to="/admin/users">Manage Users</Link>
+          </Button>
+        )}
+
         <span className="text-sm sm:text-base text-gray-700">
           Hello, {user?.name}
         </span>
+
         <Button
-          variant="outline"
+          variant="destructive"
           onClick={handleLogout}
           className="w-full sm:w-auto min-h-[40px]"
         >

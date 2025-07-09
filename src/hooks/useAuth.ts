@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react"
 import { registerUser, loginUser, getMe } from "@/api/authApi"
-import type { User } from "@/types/User"
+import type { IUser } from "@/types/User"
 
 export default function useAuth() {
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<IUser | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
 
   // Fetch user when token exists

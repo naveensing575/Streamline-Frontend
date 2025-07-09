@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Navbar from "@/components/Navbar";
 import Board from "@/components/Board";
 import AddTaskModal from "@/components/AddTaskModal";
 import EditTaskModal from "@/components/EditTaskModal";
@@ -21,7 +20,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 export default function Dashboard() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const {
     tasks,
     loading,
@@ -110,8 +109,6 @@ export default function Dashboard() {
 
   return (
     <>
-      <Navbar user={user} logout={logout} />
-
       <main className="max-w-7xl mx-auto px-2 sm:px-4 py-6 sm:py-8">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <h1 className="text-xl sm:text-2xl font-bold">
