@@ -11,7 +11,7 @@ import { Toaster } from "@/components/ui/sonner"
 export default function App() {
   return (
     <BrowserRouter>
-      <Toaster richColors position="top-right" />
+      <Toaster position="top-right" />
       <Routes>
         <Route
           element={
