@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { GripVertical, MoreHorizontal, Loader2 } from "lucide-react";
+import { GripVertical, MoreHorizontal, Loader2, Calendar } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -41,19 +41,22 @@ export default function TaskItem({
     done: "bg-green-100 text-green-800",
   };
 
-  const canBreakDown = onBreakdown && !subTasks?.length;
+  const canBreakDown = onBreakdown && status !== "done" && !subTasks?.length;
 
   return (
-    <Card className="w-full flex flex-col shadow-md rounded-xl border border-gray-200">
+    <Card className="w-full flex flex-col rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg transition-all hover:scale-[1.01] bg-white dark:bg-gray-800">
       <CardHeader className="flex flex-col items-start gap-2 pb-0">
         <div className="flex w-full justify-between items-start">
-          <div
-            className="flex items-center gap-2"
-            {...dragListeners}
-            {...dragAttributes}
-          >
-            <GripVertical className="w-5 h-5 text-gray-400 cursor-grab" />
-            <CardTitle className="text-sm sm:text-base font-semibold">
+          <div className="flex items-center gap-2">
+            {/* ✅ DRAG HANDLE ONLY ON ICON */}
+            <span
+              className="cursor-grab active:cursor-grabbing"
+              {...dragListeners}
+              {...dragAttributes}
+            >
+              <GripVertical className="w-5 h-5 text-gray-400" />
+            </span>
+            <CardTitle className="text-base font-semibold text-gray-900 dark:text-gray-100">
               {title}
             </CardTitle>
           </div>
@@ -65,7 +68,7 @@ export default function TaskItem({
             </span>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon" className="hover:bg-gray-100">
                   <MoreHorizontal className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
@@ -77,11 +80,18 @@ export default function TaskItem({
                     onClick={onBreakdown}
                     disabled={!canBreakDown || isBreakingDown}
                   >
-                    {isBreakingDown
-                      ? "Generating..."
-                      : subTasks?.length
-                      ? "Break Down (Done)"
-                      : "Break Down"}
+                    {isBreakingDown ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Generating...
+                      </>
+                    ) : status === "done" ? (
+                      "Break Down (Disabled)"
+                    ) : subTasks?.length ? (
+                      "Break Down (Done)"
+                    ) : (
+                      "Break Down"
+                    )}
                   </DropdownMenuItem>
                 )}
               </DropdownMenuContent>
@@ -89,7 +99,8 @@ export default function TaskItem({
           </div>
         </div>
         {dueDate && (
-          <p className="text-xs text-gray-500">
+          <p className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+            <Calendar className="w-4 h-4" />
             Due: {new Date(dueDate).toLocaleDateString()}
           </p>
         )}
@@ -97,7 +108,7 @@ export default function TaskItem({
 
       <CardContent className="flex flex-col flex-1 gap-3 mt-2">
         {description && (
-          <p className="text-sm sm:text-base text-gray-600 line-clamp-3">
+          <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-3">
             {description}
           </p>
         )}
@@ -111,10 +122,10 @@ export default function TaskItem({
 
         {!isBreakingDown && subTasks && subTasks.length > 0 && (
           <div className="mt-2">
-            <p className="text-xs font-medium text-gray-700 mb-1">
+            <p className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
               {subTasks.length} Subtask{subTasks.length > 1 ? "s" : ""}
             </p>
-            <ul className="text-xs text-gray-600 list-disc list-inside">
+            <ul className="text-xs text-gray-600 dark:text-gray-400 list-disc list-inside">
               {subTasks.map((sub, i) => (
                 <li key={i}>{sub}</li>
               ))}
