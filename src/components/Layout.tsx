@@ -1,9 +1,14 @@
-import { Outlet } from "react-router-dom"
-import Navbar from "@/components/Navbar"
-import useAuth from "@/hooks/useAuth"
+import { Outlet } from "react-router-dom";
+import Navbar from "@/components/Navbar";
+import { useGetMeQuery } from "@/features/authApi";
 
 export default function Layout() {
-  const { user, logout } = useAuth()
+  const { data: user } = useGetMeQuery();
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    window.location.href = "/login";
+  };
 
   return (
     <>
@@ -12,5 +17,5 @@ export default function Layout() {
         <Outlet />
       </main>
     </>
-  )
+  );
 }
