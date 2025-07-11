@@ -41,7 +41,8 @@ export default function TaskItem({
     done: "bg-green-100 text-green-800",
   };
 
-  const canBreakDown = onBreakdown && !subTasks?.length;
+  // ✅ Better: only allow breakdown if status !== 'done' AND no subtasks yet
+  const canBreakDown = onBreakdown && status !== "done" && !subTasks?.length;
 
   return (
     <Card className="w-full flex flex-col shadow-md rounded-xl border border-gray-200">
@@ -71,17 +72,26 @@ export default function TaskItem({
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={onEdit}>Edit</DropdownMenuItem>
-                <DropdownMenuItem onClick={onRequestDelete}>Delete</DropdownMenuItem>
+                <DropdownMenuItem onClick={onRequestDelete}>
+                  Delete
+                </DropdownMenuItem>
                 {onBreakdown && (
                   <DropdownMenuItem
                     onClick={onBreakdown}
                     disabled={!canBreakDown || isBreakingDown}
                   >
-                    {isBreakingDown
-                      ? "Generating..."
-                      : subTasks?.length
-                      ? "Break Down (Done)"
-                      : "Break Down"}
+                    {isBreakingDown ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Generating...
+                      </>
+                    ) : subTasks?.length ? (
+                      "Break Down (Done)"
+                    ) : status === "done" ? (
+                      "Break Down (Disabled)"
+                    ) : (
+                      "Break Down"
+                    )}
                   </DropdownMenuItem>
                 )}
               </DropdownMenuContent>
