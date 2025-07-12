@@ -21,7 +21,6 @@ export function DatePicker({
   const [open, setOpen] = React.useState(false);
   const [inputValue, setInputValue] = React.useState("");
 
-  // Sync input when value changes externally
   React.useEffect(() => {
     if (value && isValid(value)) {
       setInputValue(format(value, "dd/MM/yyyy"));
@@ -30,7 +29,6 @@ export function DatePicker({
     }
   }, [value]);
 
-  // Restrict typing to digits + slash
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const allowed = /[0-9/]/;
     if (e.key.length === 1 && !allowed.test(e.key)) {
@@ -38,10 +36,9 @@ export function DatePicker({
     }
   };
 
-  // Validate and parse only if format is complete
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value.trim();
-    if (input.length > 10) return; // dd/mm/yyyy max length
+    if (input.length > 10) return;
     setInputValue(input);
 
     if (input.length === 10) {
@@ -77,8 +74,10 @@ export function DatePicker({
             <Calendar
               mode="single"
               selected={value}
-              //fix: jump to month if value is valid, else fallback to today
-              month={value && isValid(value) ? startOfMonth(value) : undefined}
+              defaultMonth={value && isValid(value) ? startOfMonth(value) : undefined}
+              captionLayout="dropdown"
+              startMonth={new Date(2000, 0)}
+              endMonth={new Date(2030, 11)}
               onSelect={(date) => {
                 onChange(date);
                 setOpen(false);
