@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Board from "@/components/Board";
-import AddTaskModal from "@/components/AddTaskModal";
-import EditTaskModal from "@/components/EditTaskModal";
+import AddTaskTrigger from "@/components/AddTaskTrigger";
+import EditTaskTrigger from "@/components/EditTaskTrigger";
 import StopwatchModal from "@/components/StopwatchModal";
 import {
   useGetTasksQuery,
@@ -33,25 +33,24 @@ export default function Dashboard() {
   const [removeTask] = useDeleteTaskMutation();
   const [breakdownTask] = useBreakdownTaskMutation();
 
-  const [editOpen, setEditOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [taskIdToDelete, setTaskIdToDelete] = useState<string | null>(null);
 
   if (!user) return null;
 
-  const handleAddTask = async (data) => {
+  const handleAddTask = async (data: {
+    title: string;
+    description?: string;
+    status: "todo" | "in-progress" | "done";
+    dueDate?: Date;
+  }) => {
     try {
       await addTask(data).unwrap();
       toast.success(`✅ "${data.title}" created!`);
     } catch {
       toast.error("❌ Failed to create task. Please try again.");
     }
-  };
-
-  const handleEdit = (task: Task) => {
-    setSelectedTask(task);
-    setEditOpen(true);
   };
 
   const handleSaveEdit = async (updates: Partial<Task>) => {
@@ -62,7 +61,6 @@ export default function Dashboard() {
       } catch {
         toast.error("❌ Failed to update task.");
       }
-      setEditOpen(false);
       setSelectedTask(null);
     }
   };
@@ -92,7 +90,7 @@ export default function Dashboard() {
           Welcome, {user.name}
         </h1>
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
-          <AddTaskModal onAddTask={handleAddTask} />
+          <AddTaskTrigger onAddTask={handleAddTask} />
           <StopwatchModal />
         </div>
       </div>
@@ -102,7 +100,7 @@ export default function Dashboard() {
       ) : (
         <Board
           tasks={tasks || []}
-          onEdit={handleEdit}
+          onEdit={(task) => setSelectedTask(task)}
           onRequestDelete={handleRequestDelete}
           onStatusChange={async (taskId, newStatus) => {
             try {
@@ -113,16 +111,15 @@ export default function Dashboard() {
             }
           }}
           onBreakdown={breakdownTask}
-          loadingTaskId={null} // you can wire this with local state if needed
+          loadingTaskId={null}
         />
       )}
 
       {selectedTask && (
-        <EditTaskModal
-          open={editOpen}
-          setOpen={setEditOpen}
+        <EditTaskTrigger
           task={selectedTask}
           onSave={handleSaveEdit}
+          onClose={() => setSelectedTask(null)}
         />
       )}
 

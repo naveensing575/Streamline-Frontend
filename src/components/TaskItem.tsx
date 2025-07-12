@@ -48,7 +48,6 @@ export default function TaskItem({
       <CardHeader className="flex flex-col items-start gap-2 pb-0">
         <div className="flex w-full justify-between items-start">
           <div className="flex items-center gap-2">
-            {/* ✅ DRAG HANDLE ONLY ON ICON */}
             <span
               className="cursor-grab active:cursor-grabbing"
               {...dragListeners}

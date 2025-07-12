@@ -1,3 +1,6 @@
+"use client";
+
+import * as React from "react";
 import {
   Dialog,
   DialogContent,
@@ -7,10 +10,6 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { type Task } from "@/components/TaskList";
 import {
   Select,
   SelectContent,
@@ -18,80 +17,91 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { DatePicker } from "@/components/DatePicker";
+import { type Task } from "@/components/TaskList";
 
 const formSchema = z.object({
   title: z.string().min(1, { message: "Title is required" }),
   description: z.string().optional(),
   status: z.enum(["todo", "in-progress", "done"]),
-  dueDate: z.string().min(1, { message: "Due date is required" }),
+  dueDate: z.date({
+    required_error: "Due date is required",
+    invalid_type_error: "Invalid date",
+  }),
 });
 
-type EditTaskModalProps = {
+interface TaskModalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
-  task: Task;
-  onSave: (updates: Partial<Task>) => void;
-};
+  mode: "add" | "edit";
+  defaultTask?: Task;
+  onSubmit: (values: {
+    title: string;
+    description?: string;
+    status: "todo" | "in-progress" | "done";
+    dueDate: Date;
+  }) => void;
+}
 
-export default function EditTaskModal({
+export default function TaskModal({
   open,
   setOpen,
-  task,
-  onSave,
-}: EditTaskModalProps) {
+  mode,
+  defaultTask,
+  onSubmit,
+}: TaskModalProps) {
   const {
     register,
     handleSubmit,
     setValue,
     watch,
+    control,
     reset,
     formState: { errors },
   } = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: task.title,
-      description: task.description,
-      status: task.status,
-      dueDate: task.dueDate ? task.dueDate.slice(0, 10) : "",
+      title: defaultTask?.title || "",
+      description: defaultTask?.description || "",
+      status: defaultTask?.status || "todo",
+      dueDate: defaultTask?.dueDate ? new Date(defaultTask.dueDate) : undefined,
     },
   });
 
-  useEffect(() => {
-    if (task) {
+  React.useEffect(() => {
+    if (defaultTask && mode === "edit") {
       reset({
-        title: task.title,
-        description: task.description,
-        status: task.status,
-        dueDate: task.dueDate ? task.dueDate.slice(0, 10) : "",
+        title: defaultTask.title,
+        description: defaultTask.description || "",
+        status: defaultTask.status,
+        dueDate: defaultTask.dueDate ? new Date(defaultTask.dueDate) : undefined,
+      });
+    } else if (mode === "add") {
+      reset({
+        title: "",
+        description: "",
+        status: "todo",
+        dueDate: undefined,
       });
     }
-  }, [task, reset]);
+  }, [defaultTask, mode, reset]);
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const handleFormSubmit = (values: z.infer<typeof formSchema>) => {
     const cleaned = {
-      title: values.title?.trim() || "",
-      description: values.description?.trim() || "",
+      title: values.title.trim(),
+      description: values.description?.trim(),
       status: values.status,
-      dueDate: values.dueDate?.trim() || "",
+      dueDate: values.dueDate,
     };
 
-    if (!cleaned.title || !cleaned.status || !cleaned.dueDate) {
-      console.warn("Please fill in all required fields.");
-      return;
-    }
-
-    const dueDateParsed = new Date(cleaned.dueDate);
-    if (isNaN(dueDateParsed.getTime())) {
-      console.warn("Invalid due date format.");
-      return;
-    }
-
-    onSave({
+    onSubmit({
       title: cleaned.title,
       description: cleaned.description || undefined,
-      status: cleaned.status as "todo" | "in-progress" | "done",
-      dueDate: dueDateParsed,
+      status: cleaned.status,
+      dueDate: cleaned.dueDate,
     });
 
     reset();
@@ -102,13 +112,20 @@ export default function EditTaskModal({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="w-[90vw] max-w-md sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="text-lg sm:text-xl">Edit Task</DialogTitle>
+          <DialogTitle className="text-lg sm:text-xl">
+            {mode === "add" ? "Create a New Task" : "Edit Task"}
+          </DialogTitle>
           <DialogDescription className="text-sm">
-            Update your task details below.
+            {mode === "add"
+              ? "Add task details below."
+              : "Update your task details below."}
           </DialogDescription>
         </DialogHeader>
-
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form
+          onSubmit={handleSubmit(handleFormSubmit)}
+          className="space-y-4"
+        >
+          {/* Title */}
           <div>
             <Input
               placeholder="Title"
@@ -124,12 +141,16 @@ export default function EditTaskModal({
             )}
           </div>
 
+          {/* Description */}
           <Input placeholder="Description" {...register("description")} />
 
+          {/* Status */}
           <div>
             <Select
               value={watch("status")}
-              onValueChange={(value) => setValue("status", value as any)}
+              onValueChange={(value) =>
+                setValue("status", value as any)
+              }
             >
               <SelectTrigger
                 className={
@@ -153,23 +174,22 @@ export default function EditTaskModal({
             )}
           </div>
 
-          <div>
-            <Input
-              type="date"
-              {...register("dueDate")}
-              className={
-                errors.dueDate ? "border-red-500 focus-visible:ring-red-500" : ""
-              }
-            />
-            {errors.dueDate && (
-              <p className="text-sm text-red-500 mt-1">
-                {errors.dueDate.message}
-              </p>
+          {/* Due Date */}
+          <Controller
+            control={control}
+            name="dueDate"
+            render={({ field }) => (
+              <DatePicker
+                value={field.value}
+                onChange={field.onChange}
+                placeholder="dd/mm/yyyy"
+                error={errors.dueDate?.message?.toString()}
+              />
             )}
-          </div>
+          />
 
           <Button type="submit" className="w-full min-h-[40px]">
-            Save Changes
+            {mode === "add" ? "Create Task" : "Save Changes"}
           </Button>
         </form>
       </DialogContent>
