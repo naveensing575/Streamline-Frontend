@@ -9,8 +9,8 @@ import {
   useEditTaskMutation,
   useDeleteTaskMutation,
   useBreakdownTaskMutation,
-} from "@/features/tasksApi";
-import { useGetMeQuery } from "@/features/authApi";
+} from "@/features/useTasks";
+import { useGetMeQuery } from "@/features/useAuth";
 import { toast } from "sonner";
 import { type Task } from "@/components/TaskList";
 import {
