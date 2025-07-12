@@ -34,6 +34,10 @@ export default function Navbar({ user, logout }: NavbarProps) {
           Hello, {user?.name}
         </span>
 
+        <Button asChild variant="secondary" className="w-full sm:w-auto">
+          <Link to="/profile">Profile</Link>
+        </Button>
+        
         <Button
           variant="destructive"
           onClick={handleLogout}

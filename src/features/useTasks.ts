@@ -1,8 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type { Task } from "@/types/Task";
 
-export const tasksApi = createApi({
-  reducerPath: "tasksApi",
+export const useTasks = createApi({
+  reducerPath: "useTasks",
   baseQuery: fetchBaseQuery({
     baseUrl: import.meta.env.VITE_API_URL,
     prepareHeaders: (headers) => {
@@ -56,4 +56,4 @@ export const {
   useEditTaskMutation,
   useDeleteTaskMutation,
   useBreakdownTaskMutation,
-} = tasksApi;
+} = useTasks;

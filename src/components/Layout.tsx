@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import Navbar from "@/components/Navbar";
-import { useGetMeQuery } from "@/features/authApi";
+import { useGetMeQuery } from "@/features/useAuth";
 
 export default function Layout() {
   const { data: user } = useGetMeQuery();

@@ -2,8 +2,8 @@ import {
   useGetAllUsersQuery,
   useUpdateUserRoleMutation,
   useDeleteUserMutation,
-} from "@/features/adminApi";
-import { useGetMeQuery } from "@/features/authApi";
+} from "@/features/useAdmin";
+import { useGetMeQuery } from "@/features/useAuth";
 import { Button } from "@/components/ui/button";
 import {
   Select,

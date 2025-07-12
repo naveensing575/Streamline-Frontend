@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useRegisterMutation } from "@/features/authApi";
+import { useRegisterMutation } from "@/features/useAuth";
 import RegisterForm from "@/components/RegisterForm";
 import { toast } from "sonner";
 
