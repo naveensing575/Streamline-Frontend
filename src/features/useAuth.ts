@@ -11,6 +11,7 @@ export const useAuth = createApi({
       return headers;
     },
   }),
+  tagTypes: ["User"],
   endpoints: (builder) => ({
     login: builder.mutation<{ token: string; user: IUser }, { email: string; password: string }>({
       query: (credentials) => ({
@@ -28,6 +29,15 @@ export const useAuth = createApi({
     }),
     getMe: builder.query<IUser, void>({
       query: () => "/auth/me",
+      providesTags: ["User"],
+    }),
+    updateProfile: builder.mutation<IUser, FormData>({
+      query: (formData) => ({
+        url: "/auth/me",
+        method: "PUT",
+        body: formData,
+      }),
+      invalidatesTags: ["User"],
     }),
   }),
 });
@@ -36,4 +46,5 @@ export const {
   useLoginMutation,
   useRegisterMutation,
   useGetMeQuery,
+  useUpdateProfileMutation,
 } = useAuth;

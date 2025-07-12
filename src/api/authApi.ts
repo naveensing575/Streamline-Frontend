@@ -4,6 +4,7 @@ interface RegisterPayload {
   name: string;
   email: string;
   password: string;
+  avatar?: File | null;
 }
 
 interface LoginPayload {
@@ -12,7 +13,18 @@ interface LoginPayload {
 }
 
 export const registerUser = async (data: RegisterPayload) => {
-  const res = await axiosInstance.post("/auth/register", data);
+  const formData = new FormData();
+  formData.append("name", data.name);
+  formData.append("email", data.email);
+  formData.append("password", data.password);
+  if (data.avatar) formData.append("avatar", data.avatar);
+
+  const res = await axiosInstance.post("/auth/register", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
   return res.data;
 };
 

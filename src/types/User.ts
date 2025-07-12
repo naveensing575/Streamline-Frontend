@@ -1,4 +1,5 @@
 export interface IUser {
+  profileImage: string | undefined
   _id: string
   name: string
   email: string
