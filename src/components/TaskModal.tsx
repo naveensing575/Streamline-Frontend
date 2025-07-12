@@ -1,3 +1,4 @@
+import * as React from "react";
 import {
   Dialog,
   DialogContent,
@@ -10,7 +11,6 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { type Task } from "@/components/TaskList";
 import {
   Select,
   SelectContent,
@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useEffect } from "react";
+import { type Task } from "@/components/TaskList";
 
 const formSchema = z.object({
   title: z.string().min(1, { message: "Title is required" }),
@@ -27,19 +27,26 @@ const formSchema = z.object({
   dueDate: z.string().min(1, { message: "Due date is required" }),
 });
 
-type EditTaskModalProps = {
+interface TaskModalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
-  task: Task;
-  onSave: (updates: Partial<Task>) => void;
-};
+  mode: "add" | "edit";
+  defaultTask?: Task;
+  onSubmit: (values: {
+    title: string;
+    description?: string;
+    status: "todo" | "in-progress" | "done";
+    dueDate: Date;
+  }) => void;
+}
 
-export default function EditTaskModal({
+export default function TaskModal({
   open,
   setOpen,
-  task,
-  onSave,
-}: EditTaskModalProps) {
+  mode,
+  defaultTask,
+  onSubmit,
+}: TaskModalProps) {
   const {
     register,
     handleSubmit,
@@ -50,25 +57,36 @@ export default function EditTaskModal({
   } = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: task.title,
-      description: task.description,
-      status: task.status,
-      dueDate: task.dueDate ? task.dueDate.slice(0, 10) : "",
+      title: defaultTask?.title || "",
+      description: defaultTask?.description || "",
+      status: defaultTask?.status || "todo",
+      dueDate: defaultTask?.dueDate
+        ? defaultTask.dueDate.slice(0, 10)
+        : "",
     },
   });
 
-  useEffect(() => {
-    if (task) {
+  React.useEffect(() => {
+    if (defaultTask && mode === "edit") {
       reset({
-        title: task.title,
-        description: task.description,
-        status: task.status,
-        dueDate: task.dueDate ? task.dueDate.slice(0, 10) : "",
+        title: defaultTask.title,
+        description: defaultTask.description,
+        status: defaultTask.status,
+        dueDate: defaultTask.dueDate
+          ? defaultTask.dueDate.slice(0, 10)
+          : "",
+      });
+    } else if (mode === "add") {
+      reset({
+        title: "",
+        description: "",
+        status: "todo",
+        dueDate: "",
       });
     }
-  }, [task, reset]);
+  }, [defaultTask, mode, reset]);
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const handleFormSubmit = (values: z.infer<typeof formSchema>) => {
     const cleaned = {
       title: values.title?.trim() || "",
       description: values.description?.trim() || "",
@@ -87,10 +105,10 @@ export default function EditTaskModal({
       return;
     }
 
-    onSave({
+    onSubmit({
       title: cleaned.title,
       description: cleaned.description || undefined,
-      status: cleaned.status as "todo" | "in-progress" | "done",
+      status: cleaned.status,
       dueDate: dueDateParsed,
     });
 
@@ -102,13 +120,19 @@ export default function EditTaskModal({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="w-[90vw] max-w-md sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="text-lg sm:text-xl">Edit Task</DialogTitle>
+          <DialogTitle className="text-lg sm:text-xl">
+            {mode === "add" ? "Create a New Task" : "Edit Task"}
+          </DialogTitle>
           <DialogDescription className="text-sm">
-            Update your task details below.
+            {mode === "add"
+              ? "Add task details below."
+              : "Update your task details below."}
           </DialogDescription>
         </DialogHeader>
-
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form
+          onSubmit={handleSubmit(handleFormSubmit)}
+          className="space-y-4"
+        >
           <div>
             <Input
               placeholder="Title"
@@ -129,7 +153,9 @@ export default function EditTaskModal({
           <div>
             <Select
               value={watch("status")}
-              onValueChange={(value) => setValue("status", value as any)}
+              onValueChange={(value) =>
+                setValue("status", value as any)
+              }
             >
               <SelectTrigger
                 className={
@@ -158,7 +184,9 @@ export default function EditTaskModal({
               type="date"
               {...register("dueDate")}
               className={
-                errors.dueDate ? "border-red-500 focus-visible:ring-red-500" : ""
+                errors.dueDate
+                  ? "border-red-500 focus-visible:ring-red-500"
+                  : ""
               }
             />
             {errors.dueDate && (
@@ -169,7 +197,7 @@ export default function EditTaskModal({
           </div>
 
           <Button type="submit" className="w-full min-h-[40px]">
-            Save Changes
+            {mode === "add" ? "Create Task" : "Save Changes"}
           </Button>
         </form>
       </DialogContent>
