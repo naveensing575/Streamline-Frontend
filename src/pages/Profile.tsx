@@ -1,7 +1,12 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import { useGetMeQuery, useUpdateProfileMutation } from "@/features/useAuth";
 import { toast } from "sonner";
 import ProfileAvatar from "@/components/ProfileAvatar";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function Profile() {
   const { data: user } = useGetMeQuery();
@@ -18,12 +23,10 @@ export default function Profile() {
     if (user) {
       setName(user.name);
       setEmail(user.email);
-      // If no new avatar, show user’s existing image
       setPreviewUrl(user.profileImage);
     }
   }, [user]);
 
-  // Keep preview in sync when avatar changes
   useEffect(() => {
     if (avatar) {
       const url = URL.createObjectURL(avatar);
@@ -50,7 +53,7 @@ export default function Profile() {
     try {
       await updateProfile(formData).unwrap();
       toast.success("✅ Profile updated!");
-      setAvatar(null); // Clear the local file state
+      setAvatar(null);
     } catch {
       toast.error("❌ Failed to update profile.");
     }
@@ -58,49 +61,50 @@ export default function Profile() {
 
   return (
     <div className="max-w-md mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">My Profile</h1>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-center text-2xl font-bold">
+            My Profile
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col items-center">
+          <ProfileAvatar
+            src={previewUrl}
+            onChange={(file) => setAvatar(file)}
+            onDelete={() => {
+              setAvatar(null);
+              setPreviewUrl(undefined);
+            }}
+          />
 
-      <ProfileAvatar
-        src={previewUrl}
-        onChange={(file) => setAvatar(file)}
-        onDelete={() => {
-          setAvatar(null);
-          setPreviewUrl(undefined);
-        }}
-      />
+          <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4 mt-4">
+            <Input
+              type="text"
+              value={name}
+              placeholder="Name"
+              onChange={(e) => setName(e.target.value)}
+            />
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4 mt-4">
-        <input
-          type="text"
-          value={name}
-          placeholder="Name"
-          onChange={(e) => setName(e.target.value)}
-          className="border p-2 rounded"
-        />
+            <Input
+              type="email"
+              value={email}
+              placeholder="Email"
+              onChange={(e) => setEmail(e.target.value)}
+            />
 
-        <input
-          type="email"
-          value={email}
-          placeholder="Email"
-          onChange={(e) => setEmail(e.target.value)}
-          className="border p-2 rounded"
-        />
+            <Input
+              type="password"
+              value={password}
+              placeholder="New Password"
+              onChange={(e) => setPassword(e.target.value)}
+            />
 
-        <input
-          type="password"
-          value={password}
-          placeholder="New Password"
-          onChange={(e) => setPassword(e.target.value)}
-          className="border p-2 rounded"
-        />
-
-        <button
-          type="submit"
-          className="bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-        >
-          Save Changes
-        </button>
-      </form>
+            <Button type="submit" className="w-full">
+              Save Changes
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }

@@ -44,7 +44,7 @@ export default function Sidebar() {
       </div>
 
       {/* Center Nav Icons */}
-      <nav className="flex flex-col items-center gap-5 flex-1 justify-center">
+      <nav className="flex flex-col items-center gap-7 flex-1 justify-center">
         {navLinks.map(({ path, icon: Icon }) => {
           const isActive = location.pathname === path;
           return (
@@ -78,7 +78,7 @@ export default function Sidebar() {
           <Settings
             className={`${
               location.pathname === "/admin/users"
-                ? "text-green-700"
+                ? "text-gray-900"
                 : "text-gray-700"
             } h-4 w-4 sm:h-5 sm:w-5`}
           />
