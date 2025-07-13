@@ -2,6 +2,7 @@ import type { IUser } from "@/types/User";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import SettingsMenu from "@/components/SettingsMenu";
 
 interface NavbarProps {
   user: IUser;
@@ -13,7 +14,7 @@ export default function Navbar({ user, logout }: NavbarProps) {
 
   const handleLogout = () => {
     logout();
-    toast.success("👋 Logged out successfully.");
+    toast.success("Logged out successfully.");
     navigate("/login");
   };
 
@@ -24,20 +25,12 @@ export default function Navbar({ user, logout }: NavbarProps) {
       </Link>
 
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 w-full sm:w-auto">
-        {user?.role === "admin" && (
-          <Button asChild variant="secondary" className="w-full sm:w-auto">
-            <Link to="/admin/users">Manage Users</Link>
-          </Button>
-        )}
-
         <span className="text-sm sm:text-base text-gray-700">
           Hello, {user?.name}
         </span>
 
-        <Button asChild variant="secondary" className="w-full sm:w-auto">
-          <Link to="/profile">Profile</Link>
-        </Button>
-        
+        <SettingsMenu user={user}/>
+
         <Button
           variant="destructive"
           onClick={handleLogout}
