@@ -21,7 +21,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { DatePicker } from "@/components/DatePicker";
-import { type Task } from "@/components/TaskList";
+import { type Task } from "@/components/Tasks/TaskList";
 
 const formSchema = z.object({
   title: z.string().min(1, { message: "Title is required" }),

@@ -1,6 +1,6 @@
 import useTasks from "@/hooks/useTasks";
 import Board from "@/components/Board";
-import type { Task } from "@/components/TaskList";
+import type { Task } from "@/components/Tasks/TaskList";
 
 export default function BoardWrapper() {
   const {

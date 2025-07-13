@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useOutletContext } from "react-router-dom";
 import KanbanBoard from "@/components/Kanban/KanbanBoard";
 import TimelineBoard from "@/components/Timeline/TimelineBoard";
-import AddTaskTrigger from "@/components/AddTaskTrigger";
+import AddTaskTrigger from "@/components/Tasks/AddTaskTrigger";
 import StopwatchModal from "@/components/StopwatchModal";
-import EditTaskTrigger from "@/components/EditTaskTrigger";
+import EditTaskTrigger from "@/components/Tasks/EditTaskTrigger";
+import Navbar from "@/components/Navbar";
+
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -17,9 +19,17 @@ import {
 } from "@/components/ui/alert-dialog";
 
 import { useGetMeQuery } from "@/features/useAuth";
-import { useGetTasksQuery, useAddTaskMutation, useEditTaskMutation, useDeleteTaskMutation, useBreakdownTaskMutation } from "@/features/useTasks";
+import {
+  useGetTasksQuery,
+  useAddTaskMutation,
+  useEditTaskMutation,
+  useDeleteTaskMutation,
+  useBreakdownTaskMutation,
+} from "@/features/useTasks";
+
 import { toast } from "sonner";
-import { type Task } from "@/components/TaskList";
+import { useState } from "react";
+import { type Task } from "@/components/Tasks/TaskList";
 
 export default function Dashboard() {
   const { data: user } = useGetMeQuery();
@@ -29,7 +39,10 @@ export default function Dashboard() {
   const [removeTask] = useDeleteTaskMutation();
   const [breakdownTask] = useBreakdownTaskMutation();
 
-  const [boardType, setBoardType] = useState<"kanban" | "timeline">("kanban");
+  const { boardType, setBoardType } = useOutletContext<{
+    boardType: "kanban" | "timeline";
+    setBoardType: (type: "kanban" | "timeline") => void;
+  }>();
 
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -82,33 +95,52 @@ export default function Dashboard() {
   };
 
   return (
-    <main className="max-w-7xl mx-auto px-2 sm:px-4 py-6 sm:py-8">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-        <h1 className="text-xl sm:text-2xl font-bold">
-          Welcome, {user.name}
-        </h1>
-
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
-          <AddTaskTrigger onAddTask={handleAddTask} />
-          <StopwatchModal />
-
-          <div className="flex gap-2">
-            <button
-              onClick={() => setBoardType("kanban")}
-              className={`px-4 py-2 rounded ${boardType === "kanban" ? "bg-black text-white" : "bg-gray-200"}`}
-            >
-              Kanban Board
-            </button>
-            <button
-              onClick={() => setBoardType("timeline")}
-              className={`px-4 py-2 rounded ${boardType === "timeline" ? "bg-black text-white" : "bg-gray-200"}`}
-            >
-              Timeline Board
-            </button>
-          </div>
+    <main className="max-w-7xl mx-auto px-2 sm:px-4 py-4">
+      {/* Tabs and Navbar in one row */}
+      <div className="flex justify-between items-center mb-6 flex-wrap gap-4">
+        <div className="flex gap-2">
+          <button
+            onClick={() => setBoardType("timeline")}
+            className={`px-4 py-2 rounded-full cursor-pointer ${
+              boardType === "timeline" ? "bg-black text-white" : "bg-gray-200"
+            }`}
+          >
+            Timeline Board
+          </button>
+          <button
+            onClick={() => setBoardType("kanban")}
+            className={`px-4 py-2 rounded-full cursor-pointer ${
+              boardType === "kanban" ? "bg-black text-white" : "bg-gray-200"
+            }`}
+          >
+            Kanban Board
+          </button>
         </div>
+
+        <Navbar
+          user={user}
+          logout={() => {
+            localStorage.removeItem("token");
+            window.location.href = "/login";
+          }}
+        />
       </div>
 
+      {/* Kanban-specific header actions */}
+      {boardType === "kanban" && (
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <h1 className="text-xl sm:text-2xl font-bold">
+            Welcome, {user.name}
+          </h1>
+
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
+            <AddTaskTrigger onAddTask={handleAddTask} />
+            <StopwatchModal />
+          </div>
+        </div>
+      )}
+
+      {/* Board content */}
       {isLoading ? (
         <p>Loading tasks...</p>
       ) : boardType === "kanban" ? (
@@ -131,6 +163,7 @@ export default function Dashboard() {
         <TimelineBoard />
       )}
 
+      {/* Edit Task Modal */}
       {selectedTask && (
         <EditTaskTrigger
           task={selectedTask}
@@ -139,6 +172,7 @@ export default function Dashboard() {
         />
       )}
 
+      {/* Delete Confirm */}
       <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
         <AlertDialogTrigger asChild />
         <AlertDialogContent>

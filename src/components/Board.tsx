@@ -13,8 +13,8 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { type Task } from "@/components/TaskList";
-import TaskItem from "@/components/TaskItem";
+import { type Task } from "@/components/Tasks/TaskList";
+import TaskItem from "@/components/Tasks/TaskItem";
 import { useState } from "react";
 
 interface BoardProps {

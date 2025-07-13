@@ -1,8 +1,6 @@
 import type { IUser } from "@/types/User";
-import { Button } from "@/components/ui/button";
-import { Link, useNavigate } from "react-router-dom";
-import { toast } from "sonner";
-import SettingsMenu from "@/components/SettingsMenu";
+import { Bell } from "lucide-react";
+import ProfileMenu from "./ProfileMenu";
 
 interface NavbarProps {
   user: IUser;
@@ -10,34 +8,15 @@ interface NavbarProps {
 }
 
 export default function Navbar({ user, logout }: NavbarProps) {
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    toast.success("Logged out successfully.");
-    navigate("/login");
-  };
-
   return (
-    <nav className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4 px-4 py-4 bg-gray-100 border-b">
-      <Link to="/" className="text-lg sm:text-xl font-bold">
-        TaskFlowAI
-      </Link>
+    <nav className="flex justify-between items-center px-4 py-4 border-b">
 
-      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 w-full sm:w-auto">
-        <span className="text-sm sm:text-base text-gray-700">
-          Hello, {user?.name}
-        </span>
+      <div className="flex items-center gap-8 cursor-pointer">
+        <button className="relative">
+          <Bell className="h-5 w-5 text-gray-600" />
+        </button>
 
-        <SettingsMenu user={user}/>
-
-        <Button
-          variant="destructive"
-          onClick={handleLogout}
-          className="w-full sm:w-auto min-h-[40px]"
-        >
-          Logout
-        </Button>
+        <ProfileMenu user={user} logout={logout} />
       </div>
     </nav>
   );

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import TaskModal from "@/components/TaskModal";
+import TaskModal from "@/components/Tasks/TaskModal";
 
 type AddTaskProps = {
   onAddTask: (data: {

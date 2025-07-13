@@ -1,7 +1,5 @@
-"use client";
-
 import Board from "@/components/Board";
-import { type Task } from "@/components/TaskList";
+import { type Task } from "@/components/Tasks/TaskList";
 
 interface KanbanBoardProps {
   tasks: Task[];
