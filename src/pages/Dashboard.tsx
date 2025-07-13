@@ -1,3 +1,5 @@
+"use client";
+
 import { useOutletContext } from "react-router-dom";
 import KanbanBoard from "@/components/Kanban/KanbanBoard";
 import TimelineBoard from "@/components/Timeline/TimelineBoard";
@@ -5,7 +7,7 @@ import AddTaskTrigger from "@/components/Tasks/AddTaskTrigger";
 import StopwatchModal from "@/components/StopwatchModal";
 import EditTaskTrigger from "@/components/Tasks/EditTaskTrigger";
 import Navbar from "@/components/Navbar";
-import DeleteAlert from "@/components/DeleteAlert";
+import ConfirmDialog from "@/components/ConfirmDialog";
 
 import { useGetMeQuery } from "@/features/useAuth";
 import {
@@ -18,6 +20,7 @@ import {
 
 import { toast } from "sonner";
 import { useState } from "react";
+import { Loader2 } from "lucide-react";
 import { type Task } from "@/components/Tasks/TaskList";
 
 export default function Dashboard() {
@@ -129,7 +132,9 @@ export default function Dashboard() {
         )}
 
         {isLoading ? (
-          <p>Loading tasks...</p>
+          <div className="flex justify-center items-center py-20">
+            <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+          </div>
         ) : (
           <div className="transition-opacity duration-500 ease-in-out">
             {boardType === "kanban" ? (
@@ -167,11 +172,14 @@ export default function Dashboard() {
         />
       )}
 
-      {/* Delete Confirm */}
-      <DeleteAlert
+      {/* Reusable Confirm Dialog for Delete */}
+      <ConfirmDialog
         open={deleteConfirmOpen}
         onOpenChange={setDeleteConfirmOpen}
         onConfirm={handleDeleteConfirmed}
+        title="Delete this task?"
+        description="This action cannot be undone. This will permanently remove the task."
+        confirmText="Yes, Delete"
       />
     </main>
   );
