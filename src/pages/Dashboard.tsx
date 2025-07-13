@@ -5,18 +5,7 @@ import AddTaskTrigger from "@/components/Tasks/AddTaskTrigger";
 import StopwatchModal from "@/components/StopwatchModal";
 import EditTaskTrigger from "@/components/Tasks/EditTaskTrigger";
 import Navbar from "@/components/Navbar";
-
-import {
-  AlertDialog,
-  AlertDialogTrigger,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogCancel,
-  AlertDialogAction,
-} from "@/components/ui/alert-dialog";
+import DeleteAlert from "@/components/DeleteAlert";
 
 import { useGetMeQuery } from "@/features/useAuth";
 import {
@@ -95,73 +84,79 @@ export default function Dashboard() {
   };
 
   return (
-    <main className="max-w-7xl mx-auto px-2 sm:px-4 py-4">
-      {/* Tabs and Navbar in one row */}
-      <div className="flex justify-between items-center mb-6 flex-wrap gap-4">
-        <div className="flex gap-2">
+    <main className="max-w-9xl mx-auto px-2 sm:px-4 py-4">
+      {/* Tabs and Navbar */}
+      <div className="flex justify-between items-end flex-wrap gap-4 mb-0">
+        <div className="flex gap-2 border-b border-gray-200">
           <button
             onClick={() => setBoardType("timeline")}
-            className={`px-4 py-2 rounded-full cursor-pointer ${
-              boardType === "timeline" ? "bg-black text-white" : "bg-gray-200"
+            className={`px-4 pt-2 pb-5 border rounded-t-xl font-semibold tracking-wide transition-colors duration-300 cursor-pointer ${
+              boardType === "timeline"
+                ? "bg-white border-b-0 text-black"
+                : "bg-gray-100 text-gray-500"
             }`}
           >
             Timeline Board
           </button>
           <button
             onClick={() => setBoardType("kanban")}
-            className={`px-4 py-2 rounded-full cursor-pointer ${
-              boardType === "kanban" ? "bg-black text-white" : "bg-gray-200"
+            className={`px-4 pt-2 pb-5 border rounded-t-xl font-semibold tracking-wide transition-colors duration-300 cursor-pointer ${
+              boardType === "kanban"
+                ? "bg-white border-b-0 text-black"
+                : "bg-gray-100 text-gray-500"
             }`}
           >
             Kanban Board
           </button>
         </div>
 
-        <Navbar
-          user={user}
-          logout={() => {
-            localStorage.removeItem("token");
-            window.location.href = "/login";
-          }}
-        />
+        <Navbar user={user} />
       </div>
 
-      {/* Kanban-specific header actions */}
-      {boardType === "kanban" && (
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-          <h1 className="text-xl sm:text-2xl font-bold">
-            Welcome, {user.name}
-          </h1>
+      {/* Attached body content */}
+      <div className="bg-white border-t-0 border-r border-b border-gray-200 rounded-br-2xl rounded-tr-2xl rounded-bl-2xl shadow px-6 pt-10 pb-6">
+        {boardType === "kanban" && (
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10">
+            <h1 className="text-xl sm:text-2xl font-bold">
+              Welcome, {user.name}
+            </h1>
 
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
-            <AddTaskTrigger onAddTask={handleAddTask} />
-            <StopwatchModal />
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-6 w-full sm:w-auto">
+              <AddTaskTrigger onAddTask={handleAddTask} />
+              <StopwatchModal />
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Board content */}
-      {isLoading ? (
-        <p>Loading tasks...</p>
-      ) : boardType === "kanban" ? (
-        <KanbanBoard
-          tasks={tasks || []}
-          onEdit={(task) => setSelectedTask(task)}
-          onRequestDelete={handleRequestDelete}
-          onStatusChange={async (taskId, newStatus) => {
-            try {
-              await editTask({ id: taskId, updates: { status: newStatus } }).unwrap();
-              toast.success(`Status updated to ${newStatus}`);
-            } catch {
-              toast.error("Failed to update status.");
-            }
-          }}
-          onBreakdown={breakdownTask}
-          loadingTaskId={null}
-        />
-      ) : (
-        <TimelineBoard />
-      )}
+        {isLoading ? (
+          <p>Loading tasks...</p>
+        ) : (
+          <div className="transition-opacity duration-500 ease-in-out">
+            {boardType === "kanban" ? (
+              <KanbanBoard
+                tasks={tasks || []}
+                onEdit={(task) => setSelectedTask(task)}
+                onRequestDelete={handleRequestDelete}
+                onStatusChange={async (taskId, newStatus) => {
+                  try {
+                    await editTask({
+                      id: taskId,
+                      updates: { status: newStatus },
+                    }).unwrap();
+                    toast.success(`Status updated to ${newStatus}`);
+                  } catch {
+                    toast.error("Failed to update status.");
+                  }
+                }}
+                onBreakdown={breakdownTask}
+                loadingTaskId={null}
+              />
+            ) : (
+              <TimelineBoard />
+            )}
+          </div>
+        )}
+      </div>
 
       {/* Edit Task Modal */}
       {selectedTask && (
@@ -173,25 +168,11 @@ export default function Dashboard() {
       )}
 
       {/* Delete Confirm */}
-      <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
-        <AlertDialogTrigger asChild />
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete this task?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently remove the task.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setDeleteConfirmOpen(false)}>
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteConfirmed}>
-              Yes, Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <DeleteAlert
+        open={deleteConfirmOpen}
+        onOpenChange={setDeleteConfirmOpen}
+        onConfirm={handleDeleteConfirmed}
+      />
     </main>
   );
 }

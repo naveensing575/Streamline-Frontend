@@ -1,4 +1,4 @@
-import Board from "@/components/Board";
+import Board from "@/components/Kanban/Board";
 import { type Task } from "@/components/Tasks/TaskList";
 
 interface KanbanBoardProps {

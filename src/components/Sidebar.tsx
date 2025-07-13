@@ -1,5 +1,3 @@
-"use client";
-
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -10,7 +8,7 @@ import {
   Settings,
   LogOut,
 } from "lucide-react";
-import logo from "@/assets/logo.svg";
+import logo from "@/assets/logo2.png";
 import { toast } from "sonner";
 
 export default function Sidebar() {
@@ -33,20 +31,20 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="w-16 sm:w-20 bg-white border-r flex flex-col justify-between items-center py-4">
+    <aside className="w-24 sm:w-28 bg-[#ECEFE9] flex flex-col justify-between items-center py-6 px-4">
       {/* Logo */}
-      <div className="mb-4">
-        <Link to="/" className="flex items-center justify-center">
+      <div className="w-full flex justify-center mt-2">
+        <Link to="/" className="w-full flex justify-center items-center">
           <img
             src={logo}
             alt="Logo"
-            className="h-10 w-10 sm:h-12 sm:w-12 object-contain cursor-pointer"
+            className="w-20 h-20 object-contain cursor-pointer"
           />
         </Link>
       </div>
 
       {/* Center Nav Icons */}
-      <nav className="flex flex-col items-center gap-6 flex-1 justify-center">
+      <nav className="flex flex-col items-center gap-5 flex-1 justify-center">
         {navLinks.map(({ path, icon: Icon }) => {
           const isActive = location.pathname === path;
           return (
@@ -60,7 +58,7 @@ export default function Sidebar() {
               <Icon
                 className={`${
                   isActive ? "text-white" : "text-gray-700"
-                } h-5 w-5 sm:h-6 sm:w-6`}
+                } h-4 w-4 sm:h-5 sm:w-5`}
               />
             </Link>
           );
@@ -68,9 +66,9 @@ export default function Sidebar() {
       </nav>
 
       {/* Bottom Settings & Logout */}
-      <div className="flex flex-col items-center gap-6 mt-4 pb-2">
+      <div className="flex flex-col items-center gap-5 mt-4 pb-4">
         <Link
-          to="/settings"
+          to="/admin/users"
           className={`flex items-center justify-center p-2 rounded-lg ${
             location.pathname === "/settings"
               ? "bg-black text-white"
@@ -79,8 +77,10 @@ export default function Sidebar() {
         >
           <Settings
             className={`${
-              location.pathname === "/settings" ? "text-white" : "text-gray-700"
-            } h-5 w-5 sm:h-6 sm:w-6`}
+              location.pathname === "/admin/users"
+                ? "text-green-700"
+                : "text-gray-700"
+            } h-4 w-4 sm:h-5 sm:w-5`}
           />
         </Link>
 
@@ -88,7 +88,7 @@ export default function Sidebar() {
           onClick={handleLogout}
           className="cursor-pointer flex items-center justify-center p-2"
         >
-          <LogOut  className="h-5 w-5 sm:h-6 sm:w-6 text-gray-700 hover:text-black" />
+          <LogOut className="h-4 w-4 sm:h-5 sm:w-5 text-gray-700 hover:text-black" />
         </button>
       </div>
     </aside>
