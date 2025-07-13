@@ -5,7 +5,6 @@ import AddTaskTrigger from "@/components/Tasks/AddTaskTrigger";
 import StopwatchModal from "@/components/StopwatchModal";
 import EditTaskTrigger from "@/components/Tasks/EditTaskTrigger";
 import Navbar from "@/components/Navbar";
-
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -134,7 +133,7 @@ export default function Dashboard() {
           </h1>
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
-            <AddTaskTrigger onAddTask={handleAddTask} />
+           <AddTaskTrigger onAddTask={handleAddTask} />
             <StopwatchModal />
           </div>
         </div>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import TaskModal from "@/components/Tasks/TaskModal";
+import { Plus } from "lucide-react";
 
 type AddTaskProps = {
   onAddTask: (data: {
@@ -16,7 +17,7 @@ export default function AddTaskTrigger({ onAddTask }: AddTaskProps) {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}>Add Task</Button>
+      <Button onClick={() => setOpen(true)} className="flex items-center gap-2 cursor-pointer"><Plus className="h-4 w-4" /> Add Task</Button>
       <TaskModal
         open={open}
         setOpen={setOpen}
