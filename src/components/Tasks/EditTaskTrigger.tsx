@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import TaskModal from "@/components/TaskModal";
-import { type Task } from "@/components/TaskList";
+import TaskModal from "@/components/Tasks/TaskModal";
+import { type Task } from "@/components/Tasks/TaskList";
 
 export default function EditTaskTrigger({
   task,

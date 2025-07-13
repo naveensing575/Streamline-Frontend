@@ -1,21 +1,16 @@
 import { Outlet } from "react-router-dom";
-import Navbar from "@/components/Navbar";
-import { useGetMeQuery } from "@/features/useAuth";
+import Sidebar from "@/components/Sidebar";
+import { useState } from "react";
 
 export default function Layout() {
-  const { data: user } = useGetMeQuery();
-
-  const logout = () => {
-    localStorage.removeItem("token");
-    window.location.href = "/login";
-  };
+  const [boardType, setBoardType] = useState<"kanban" | "timeline">("timeline");
 
   return (
-    <>
-      <Navbar user={user!} logout={logout} />
-      <main className="p-4">
-        <Outlet />
+    <div className="flex h-screen overflow-hidden">
+      <Sidebar />
+      <main className="flex-1 overflow-y-auto p-4 bg-gray-50">
+        <Outlet context={{ boardType, setBoardType }} />
       </main>
-    </>
+    </div>
   );
 }
