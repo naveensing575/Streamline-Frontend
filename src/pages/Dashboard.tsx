@@ -121,7 +121,7 @@ export default function Dashboard() {
               Welcome, {user.name}
             </h1>
 
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-4 w-full sm:w-auto">
               <AddTaskTrigger onAddTask={handleAddTask} />
               <StopwatchModal />
             </div>

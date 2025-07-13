@@ -1,5 +1,3 @@
-"use client";
-
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -10,7 +8,7 @@ import {
   Settings,
   LogOut,
 } from "lucide-react";
-import logo from "@/assets/logo.svg";
+import logo from "@/assets/logo2.png";
 import { toast } from "sonner";
 
 export default function Sidebar() {
@@ -33,14 +31,14 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="w-20 sm:w-24 bg-[#ECEFE9] flex flex-col justify-between items-center py-6 px-4">
+    <aside className="w-24 sm:w-28 bg-[#ECEFE9] flex flex-col justify-between items-center py-6 px-4">
       {/* Logo */}
-      <div className="mb-4">
-        <Link to="/" className="flex items-center justify-center">
+      <div className="w-full flex justify-center ">
+        <Link to="/" className="w-full flex justify-center items-center">
           <img
             src={logo}
             alt="Logo"
-            className="h-12 w-12 sm:h-14 sm:w-14 object-contain cursor-pointer"
+            className="w-20 h-20 object-contain cursor-pointer"
           />
         </Link>
       </div>
@@ -79,7 +77,9 @@ export default function Sidebar() {
         >
           <Settings
             className={`${
-              location.pathname === "/admin/users" ? "text-white" : "text-gray-700"
+              location.pathname === "/admin/users"
+                ? "text-white"
+                : "text-gray-700"
             } h-4 w-4 sm:h-5 sm:w-5`}
           />
         </Link>
