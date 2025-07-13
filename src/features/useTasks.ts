@@ -1,3 +1,4 @@
+
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type { Task } from "@/types/Task";
 
@@ -16,7 +17,7 @@ export const useTasks = createApi({
     getTasks: builder.query<Task[], void>({
       query: () => "/tasks",
       providesTags: ["Tasks"],
-    }),
+    }),    
     addTask: builder.mutation({
       query: (task) => ({
         url: "/tasks",

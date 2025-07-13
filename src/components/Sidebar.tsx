@@ -78,7 +78,7 @@ export default function Sidebar() {
           <Settings
             className={`${
               location.pathname === "/admin/users"
-                ? "text-white"
+                ? "text-green-700"
                 : "text-gray-700"
             } h-4 w-4 sm:h-5 sm:w-5`}
           />
