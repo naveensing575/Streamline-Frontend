@@ -10,10 +10,9 @@ import type { IUser } from "@/types/User";
 
 interface ProfileMenuProps {
   user: IUser;
-  logout: () => void;
 }
 
-export default function ProfileMenu({ user, logout }: ProfileMenuProps) {
+export default function ProfileMenu({ user }: ProfileMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -25,7 +24,8 @@ export default function ProfileMenu({ user, logout }: ProfileMenuProps) {
         <DropdownMenuItem asChild>
           <Link to="/profile">Profile</Link>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
+        <DropdownMenuItem>Settings</DropdownMenuItem>
+        <DropdownMenuItem>Manage Users</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

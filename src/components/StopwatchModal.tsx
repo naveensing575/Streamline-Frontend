@@ -128,7 +128,7 @@ export default function StopwatchModal() {
           <img
             src={StopwatchIcon}
             alt="Open Stopwatch"
-            className="w-12 h-12 cursor-pointer hover:scale-110 transition"
+            className="w-8 h-8 cursor-pointer hover:scale-110 transition"
           />
         </DialogTrigger>
         <DialogContent className="w-[90vw] max-w-md sm:max-w-lg bg-[#1a1a1a] text-gray-100 rounded-lg p-6">

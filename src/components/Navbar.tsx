@@ -4,10 +4,9 @@ import ProfileMenu from "./ProfileMenu";
 
 interface NavbarProps {
   user: IUser;
-  logout: () => void;
 }
 
-export default function Navbar({ user, logout }: NavbarProps) {
+export default function Navbar({ user }: NavbarProps) {
   return (
     <nav className="flex justify-between items-center px-4 py-4 border-b">
 
@@ -16,7 +15,7 @@ export default function Navbar({ user, logout }: NavbarProps) {
           <Bell className="h-5 w-5 text-gray-600" />
         </button>
 
-        <ProfileMenu user={user} logout={logout} />
+        <ProfileMenu user={user} />
       </div>
     </nav>
   );

@@ -96,7 +96,7 @@ export default function Board({
             onRequestDelete={onRequestDelete}
             onBreakdown={onBreakdown}
             loadingTaskId={loadingTaskId}
-            activeTaskId={activeTaskId} // ✅ pass it down
+            activeTaskId={activeTaskId}
           />
         ))}
       </div>
@@ -157,7 +157,7 @@ function DroppableColumn({
             onRequestDelete={onRequestDelete}
             onBreakdown={onBreakdown}
             loadingTaskId={loadingTaskId}
-            activeTaskId={activeTaskId} // ✅ pass it down
+            activeTaskId={activeTaskId}
           />
         ))}
       </SortableContext>
@@ -195,7 +195,7 @@ function SortableTask({
       ref={setNodeRef}
       style={style}
       {...attributes}
-      className={`mb-2 ${isDragging ? "opacity-50" : ""}`} // ✅ light placeholder style
+      className={`mb-2 ${isDragging ? "opacity-50" : ""}`}
     >
       <TaskItem
         title={task.title}
