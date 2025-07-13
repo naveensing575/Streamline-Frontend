@@ -84,7 +84,7 @@ export default function Dashboard() {
   };
 
   return (
-    <main className="max-w-7xl mx-auto px-2 sm:px-4 py-4">
+    <main className="max-w-9xl mx-auto px-2 sm:px-4 py-4">
       {/* Tabs and Navbar */}
       <div className="flex justify-between items-end flex-wrap gap-4 mb-0">
         <div className="flex gap-2 border-b border-gray-200">
@@ -114,14 +114,14 @@ export default function Dashboard() {
       </div>
 
       {/* Attached body content */}
-      <div className="bg-white border-t-0 border-r border-b border-gray-200 rounded-br-2xl rounded-tr-2xl shadow px-6 pt-10 pb-6">
+      <div className="bg-white border-t-0 border-r border-b border-gray-200 rounded-br-2xl rounded-tr-2xl rounded-bl-2xl shadow px-6 pt-10 pb-6">
         {boardType === "kanban" && (
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10">
             <h1 className="text-xl sm:text-2xl font-bold">
               Welcome, {user.name}
             </h1>
 
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-4 w-full sm:w-auto">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-6 w-full sm:w-auto">
               <AddTaskTrigger onAddTask={handleAddTask} />
               <StopwatchModal />
             </div>
