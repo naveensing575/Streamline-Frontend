@@ -16,7 +16,7 @@ export default function ProfileMenu({ user }: ProfileMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Avatar className="h-6 w-6">
+        <Avatar className="h-8 w-8">
           <AvatarImage src={user.profileImage || ""} alt={user.name} />
         </Avatar>
       </DropdownMenuTrigger>
