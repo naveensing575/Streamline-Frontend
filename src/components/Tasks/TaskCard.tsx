@@ -107,9 +107,10 @@ export default function TaskCard({
 
       <CardContent className="flex flex-col flex-1 gap-3 mt-2">
         {description && (
-          <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-3">
-            {description}
-          </p>
+          <div
+            className="text-sm text-gray-700 dark:text-gray-300 line-clamp-3 prose max-w-none"
+            dangerouslySetInnerHTML={{ __html: description }}
+          />
         )}
 
         {isBreakingDown && (
