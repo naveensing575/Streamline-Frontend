@@ -33,7 +33,7 @@ export default function Sidebar() {
   return (
     <aside className="w-24 sm:w-28 bg-[#ECEFE9] flex flex-col justify-between items-center py-6 px-4">
       {/* Logo */}
-      <div className="w-full flex justify-center mt-2">
+      <div className="w-full flex justify-center">
         <Link to="/" className="w-full flex justify-center items-center">
           <img
             src={logo}

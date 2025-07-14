@@ -88,11 +88,11 @@ export default function Dashboard() {
   return (
     <div className="flex flex-col h-full w-full overflow-hidden">
       {/* Tabs and Navbar */}
-      <div className="flex justify-between items-end flex-wrap gap-4 mb-0">
+      <div className="flex justify-between items-end flex-wrap gap-4 mb-0 mt-2">
         <div className="flex gap-2 border-b border-gray-200">
           <button
             onClick={() => setBoardType("kanban")}
-            className={`px-4 pt-2 pb-5 border rounded-t-xl font-semibold tracking-wide transition-colors duration-300 cursor-pointer ${
+            className={`px-4 pt-2 pb-7 border rounded-t-xl font-semibold tracking-wide transition-colors duration-300 cursor-pointer ${
               boardType === "kanban"
                 ? "bg-white border-b-0 text-black"
                 : "bg-gray-100 text-gray-500"
@@ -102,7 +102,7 @@ export default function Dashboard() {
           </button>
           <button
             onClick={() => setBoardType("timeline")}
-            className={`px-4 pt-2 pb-5 border rounded-t-xl font-semibold tracking-wide transition-colors duration-300 cursor-pointer ${
+            className={`px-4 pt-2 pb-7 border rounded-t-xl font-semibold tracking-wide transition-colors duration-300 cursor-pointer ${
               boardType === "timeline"
                 ? "bg-white border-b-0 text-black"
                 : "bg-gray-100 text-gray-500"

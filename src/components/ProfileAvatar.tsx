@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { User, Pencil, X, Loader2 } from "lucide-react";
 import {
   DropdownMenu,
@@ -21,6 +21,12 @@ export default function ProfileAvatar({
 }) {
   const [isUploading, setIsUploading] = useState(false);
   const [cropOpen, setCropOpen] = useState(false);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileInputClick = () => {
+    fileInputRef.current?.click();
+  };
 
   const handleFileChange = async (file: File | null) => {
     if (!file) return;
@@ -54,7 +60,6 @@ export default function ProfileAvatar({
 
   return (
     <div className="relative w-32 h-32 mx-auto mb-4">
-      {/* Profile image wrapper */}
       <div className="w-32 h-32 rounded-full overflow-hidden relative">
         {isUploading ? (
           <div className="w-full h-full flex items-center justify-center bg-gray-100">
@@ -85,21 +90,20 @@ export default function ProfileAvatar({
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem onClick={handleEdit}>Edit Photo</DropdownMenuItem>
-          <DropdownMenuItem>
-            <label className="cursor-pointer">
-              Upload New
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) =>
-                  handleFileChange(e.target.files?.[0] || null)
-                }
-                className="hidden"
-              />
-            </label>
+          <DropdownMenuItem onClick={handleFileInputClick}>
+            Upload New
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      {/* Hidden file input */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
+        className="hidden"
+      />
 
       {/* Delete Button */}
       {src && !isUploading && (
