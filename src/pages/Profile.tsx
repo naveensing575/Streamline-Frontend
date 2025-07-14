@@ -7,6 +7,7 @@ import ProfileAvatar from "@/components/ProfileAvatar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Loader2 } from "lucide-react";
 
 export default function Profile() {
   const { data: user } = useGetMeQuery();
@@ -18,6 +19,8 @@ export default function Profile() {
 
   const [avatar, setAvatar] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | undefined>(undefined);
+
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -41,6 +44,7 @@ export default function Profile() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
 
     const formData = new FormData();
     formData.append("name", name);
@@ -56,11 +60,13 @@ export default function Profile() {
       setAvatar(null);
     } catch {
       toast.error("❌ Failed to update profile.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-md mx-auto p-4">
+    <div className="max-w-md mx-auto p-4 mt-4">
       <Card>
         <CardHeader>
           <CardTitle className="text-center text-2xl font-bold">
@@ -99,7 +105,8 @@ export default function Profile() {
               onChange={(e) => setPassword(e.target.value)}
             />
 
-            <Button type="submit" className="w-full">
+            <Button type="submit" disabled={loading} className="w-full">
+              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Save Changes
             </Button>
           </form>

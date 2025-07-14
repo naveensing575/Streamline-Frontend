@@ -1,3 +1,5 @@
+"use client";
+
 import {
   DndContext,
   closestCenter,
@@ -15,7 +17,8 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { type Task } from "@/components/Tasks/TaskList";
 import TaskItem from "@/components/Tasks/TaskItem";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface BoardProps {
   tasks: Task[];
@@ -27,6 +30,7 @@ interface BoardProps {
   ) => void;
   onBreakdown: (taskId: string) => void;
   loadingTaskId: string | null;
+  isLoading: boolean; // ✅ external loading prop from Dashboard
 }
 
 const statuses: Array<"todo" | "in-progress" | "done"> = [
@@ -42,9 +46,29 @@ export default function Board({
   onStatusChange,
   onBreakdown,
   loadingTaskId,
+  isLoading, // from parent
 }: BoardProps) {
   const sensors = useSensors(useSensor(PointerSensor));
   const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
+
+  // ✅ Local state to guarantee min skeleton duration
+  const [showSkeleton, setShowSkeleton] = useState(isLoading);
+
+  useEffect(() => {
+    let timeout: NodeJS.Timeout | null = null;
+
+    if (isLoading) {
+      setShowSkeleton(true);
+    } else {
+      timeout = setTimeout(() => {
+        setShowSkeleton(false);
+      }, 2000);
+    }
+
+    return () => {
+      if (timeout) clearTimeout(timeout);
+    };
+  }, [isLoading]);
 
   const handleDragStart = (event: any) => {
     setActiveTaskId(event.active.id);
@@ -98,6 +122,7 @@ export default function Board({
               onBreakdown={onBreakdown}
               loadingTaskId={loadingTaskId}
               activeTaskId={activeTaskId}
+              isLoading={showSkeleton} // ✅ controlled with timeout
             />
           ))}
         </div>
@@ -128,6 +153,7 @@ function DroppableColumn({
   onBreakdown,
   loadingTaskId,
   activeTaskId,
+  isLoading,
 }: {
   id: string;
   tasks: Task[];
@@ -136,6 +162,7 @@ function DroppableColumn({
   onBreakdown: (taskId: string) => void;
   loadingTaskId: string | null;
   activeTaskId: string | null;
+  isLoading: boolean; // ✅ local flag with timeout
 }) {
   const { setNodeRef } = useDroppable({ id });
 
@@ -147,22 +174,31 @@ function DroppableColumn({
       <h2 className="text-base sm:text-lg font-semibold capitalize mb-2">
         {id.replace("-", " ")}
       </h2>
-      <SortableContext
-        items={tasks.map((t) => t._id)}
-        strategy={verticalListSortingStrategy}
-      >
-        {tasks.map((task) => (
-          <SortableTask
-            key={task._id}
-            task={task}
-            onEdit={onEdit}
-            onRequestDelete={onRequestDelete}
-            onBreakdown={onBreakdown}
-            loadingTaskId={loadingTaskId}
-            activeTaskId={activeTaskId}
-          />
-        ))}
-      </SortableContext>
+
+      {isLoading ? (
+        <div className="space-y-2">
+          {[...Array(3)].map((_, i) => (
+            <Skeleton key={i} className="h-[100px] w-full rounded-md" />
+          ))}
+        </div>
+      ) : (
+        <SortableContext
+          items={tasks.map((t) => t._id)}
+          strategy={verticalListSortingStrategy}
+        >
+          {tasks.map((task) => (
+            <SortableTask
+              key={task._id}
+              task={task}
+              onEdit={onEdit}
+              onRequestDelete={onRequestDelete}
+              onBreakdown={onBreakdown}
+              loadingTaskId={loadingTaskId}
+              activeTaskId={activeTaskId}
+            />
+          ))}
+        </SortableContext>
+      )}
     </div>
   );
 }

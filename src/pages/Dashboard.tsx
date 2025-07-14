@@ -1,3 +1,5 @@
+"use client";
+
 import { useOutletContext } from "react-router-dom";
 import KanbanBoard from "@/components/Kanban/KanbanBoard";
 import TimelineBoard from "@/components/Timeline/TimelineBoard";
@@ -5,7 +7,7 @@ import AddTaskTrigger from "@/components/Tasks/AddTaskTrigger";
 import StopwatchModal from "@/components/StopwatchModal";
 import EditTaskTrigger from "@/components/Tasks/EditTaskTrigger";
 import Navbar from "@/components/Navbar";
-import DeleteAlert from "@/components/DeleteAlert";
+import ConfirmDialog from "@/components/ConfirmDialog";
 
 import { useGetMeQuery } from "@/features/useAuth";
 import {
@@ -113,7 +115,7 @@ export default function Dashboard() {
         <Navbar user={user} />
       </div>
 
-      {/* Attached body content */}
+      {/* Body content */}
       <div className="bg-white border-t-0 border-r border-b border-gray-200 rounded-br-2xl rounded-tr-2xl rounded-bl-2xl shadow px-6 pt-10 pb-6">
         {boardType === "kanban" && (
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10">
@@ -121,44 +123,40 @@ export default function Dashboard() {
               Welcome, {user.name}
             </h1>
 
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-6 w-full sm:w-auto">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 w-full sm:w-auto">
               <AddTaskTrigger onAddTask={handleAddTask} />
               <StopwatchModal />
             </div>
           </div>
         )}
 
-        {isLoading ? (
-          <p>Loading tasks...</p>
-        ) : (
-          <div className="transition-opacity duration-500 ease-in-out">
-            {boardType === "kanban" ? (
-              <KanbanBoard
-                tasks={tasks || []}
-                onEdit={(task) => setSelectedTask(task)}
-                onRequestDelete={handleRequestDelete}
-                onStatusChange={async (taskId, newStatus) => {
-                  try {
-                    await editTask({
-                      id: taskId,
-                      updates: { status: newStatus },
-                    }).unwrap();
-                    toast.success(`Status updated to ${newStatus}`);
-                  } catch {
-                    toast.error("Failed to update status.");
-                  }
-                }}
-                onBreakdown={breakdownTask}
-                loadingTaskId={null}
-              />
-            ) : (
-              <TimelineBoard />
-            )}
-          </div>
-        )}
+        <div className="transition-opacity duration-500 ease-in-out">
+          {boardType === "kanban" ? (
+            <KanbanBoard
+              tasks={tasks || []}
+              onEdit={(task) => setSelectedTask(task)}
+              onRequestDelete={handleRequestDelete}
+              onStatusChange={async (taskId, newStatus) => {
+                try {
+                  await editTask({
+                    id: taskId,
+                    updates: { status: newStatus },
+                  }).unwrap();
+                  toast.success(`Status updated to ${newStatus}`);
+                } catch {
+                  toast.error("Failed to update status.");
+                }
+              }}
+              onBreakdown={breakdownTask}
+              loadingTaskId={null}
+              isLoading={isLoading}
+            />
+          ) : (
+            <TimelineBoard />
+          )}
+        </div>
       </div>
 
-      {/* Edit Task Modal */}
       {selectedTask && (
         <EditTaskTrigger
           task={selectedTask}
@@ -167,11 +165,13 @@ export default function Dashboard() {
         />
       )}
 
-      {/* Delete Confirm */}
-      <DeleteAlert
+      <ConfirmDialog
         open={deleteConfirmOpen}
         onOpenChange={setDeleteConfirmOpen}
         onConfirm={handleDeleteConfirmed}
+        title="Delete this task?"
+        description="This action cannot be undone. This will permanently remove the task."
+        confirmText="Yes, Delete"
       />
     </main>
   );

@@ -3,7 +3,7 @@ import Sidebar from "@/components/Sidebar";
 import { useState } from "react";
 
 export default function Layout() {
-  const [boardType, setBoardType] = useState<"kanban" | "timeline">("timeline");
+  const [boardType, setBoardType] = useState<"kanban" | "timeline">("kanban");
 
   return (
     <div className="flex h-screen overflow-hidden">

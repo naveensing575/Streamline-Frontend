@@ -12,24 +12,18 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogCancel,
-  AlertDialogAction,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+import ConfirmDialog from "@/components/ConfirmDialog";
 import { toast } from "sonner";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 
 export default function ManageUsers() {
   const { data: user } = useGetMeQuery();
   const { data: users = [], isLoading } = useGetAllUsersQuery();
   const [updateUserRole] = useUpdateUserRoleMutation();
   const [deleteUser] = useDeleteUserMutation();
+
+  const [openDialogId, setOpenDialogId] = useState<string | null>(null);
 
   const handleRoleChange = async (id: string, newRole: "user" | "admin") => {
     try {
@@ -46,6 +40,8 @@ export default function ManageUsers() {
       toast.success(res.message);
     } catch {
       toast.error("Failed to delete user.");
+    } finally {
+      setOpenDialogId(null);
     }
   };
 
@@ -67,7 +63,9 @@ export default function ManageUsers() {
       <h1 className="text-2xl font-bold mb-6">Manage Users</h1>
 
       {isLoading ? (
-        <p>Loading users...</p>
+        <div className="flex justify-center items-center py-20">
+          <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+        </div>
       ) : (
         <div className="overflow-x-auto">
           <table className="min-w-full border border-gray-200 rounded overflow-hidden">
@@ -108,34 +106,24 @@ export default function ManageUsers() {
                     </Select>
                   </td>
                   <td className="border px-4 py-3">
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          className="cursor-pointer"
-                        >
-                          Delete
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            This will permanently delete this user.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction
-                            onClick={() => handleDelete(u._id)}
-                            className="bg-red-500 hover:bg-red-600"
-                          >
-                            Confirm Delete
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => setOpenDialogId(u._id)}
+                    >
+                      Delete
+                    </Button>
+
+                    <ConfirmDialog
+                      open={openDialogId === u._id}
+                      onOpenChange={(open) =>
+                        setOpenDialogId(open ? u._id : null)
+                      }
+                      title="Delete this user?"
+                      description="This will permanently delete this user. This action cannot be undone."
+                      confirmText="Yes, Delete"
+                      onConfirm={() => handleDelete(u._id)}
+                    />
                   </td>
                 </tr>
               ))}

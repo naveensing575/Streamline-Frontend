@@ -111,7 +111,7 @@ export default function TaskModal({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="w-[90vw] max-w-md sm:max-w-lg">
-        <DialogHeader>
+      <DialogHeader>
           <DialogTitle className="text-lg sm:text-xl">
             {mode === "add" ? "Create a New Task" : "Edit Task"}
           </DialogTitle>
