@@ -1,11 +1,11 @@
-import TaskItem from "./TaskCard"
+import TaskItem from './TaskCard'
 
 export interface Task {
   subTasks: string[] | undefined
   _id: string
   title: string
   description?: string
-  status: "todo" | "in-progress" | "done"
+  status: 'todo' | 'in-progress' | 'done'
   dueDate?: string
 }
 
@@ -15,7 +15,11 @@ interface TaskListProps {
   onRequestDelete: (taskId: string) => void
 }
 
-export default function TaskList({ tasks, onEdit, onRequestDelete }: TaskListProps) {
+export default function TaskList({
+  tasks,
+  onEdit,
+  onRequestDelete,
+}: TaskListProps) {
   if (tasks.length === 0) {
     return (
       <div className="text-center text-gray-500 py-8">

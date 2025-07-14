@@ -1,7 +1,7 @@
-import { configureStore } from "@reduxjs/toolkit";
-import { useAuth } from "@/features/useAuth";
-import { useTasks } from "@/features/useTasks";
-import { useAdmin } from "@/features/useAdmin";
+import { configureStore } from '@reduxjs/toolkit'
+import { useAuth } from '@/features/useAuth'
+import { useTasks } from '@/features/useTasks'
+import { useAdmin } from '@/features/useAdmin'
 
 export const store = configureStore({
   reducer: {
@@ -13,9 +13,9 @@ export const store = configureStore({
     getDefaultMiddleware().concat(
       useAuth.middleware,
       useTasks.middleware,
-      useAdmin.middleware
+      useAdmin.middleware,
     ),
-});
+})
 
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
+export type RootState = ReturnType<typeof store.getState>
+export type AppDispatch = typeof store.dispatch

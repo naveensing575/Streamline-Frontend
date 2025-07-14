@@ -1,13 +1,13 @@
-"use client";
+'use client'
 
-import TimelineHeader from "./TimelineHeader";
-import ResourceRow from "./ResourceRow";
+import TimelineHeader from './TimelineHeader'
+import ResourceRow from './ResourceRow'
 
 export default function TimelineBoard() {
   const dummyUsers = [
-    { id: 1, name: "Jake Thompson", role: "Warehouse Associate" },
-    { id: 2, name: "Emma Carter", role: "Warehouse Associate" },
-  ];
+    { id: 1, name: 'Jake Thompson', role: 'Warehouse Associate' },
+    { id: 2, name: 'Emma Carter', role: 'Warehouse Associate' },
+  ]
 
   return (
     <div className="w-full flex flex-col gap-4">
@@ -19,5 +19,5 @@ export default function TimelineBoard() {
         ))}
       </div>
     </div>
-  );
+  )
 }

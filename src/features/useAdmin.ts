@@ -1,48 +1,51 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { IUser } from "@/types/User";
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import type { IUser } from '@/types/User'
 
 export const useAdmin = createApi({
-  reducerPath: "useAdmin",
+  reducerPath: 'useAdmin',
   baseQuery: fetchBaseQuery({
     baseUrl: import.meta.env.VITE_API_URL,
     prepareHeaders: (headers) => {
-      const token = localStorage.getItem("token");
-      if (token) headers.set("authorization", `Bearer ${token}`);
-      return headers;
+      const token = localStorage.getItem('token')
+      if (token) headers.set('authorization', `Bearer ${token}`)
+      return headers
     },
   }),
-  tagTypes: ["Users", "ActivityLogs"],
+  tagTypes: ['Users', 'ActivityLogs'],
 
   endpoints: (builder) => ({
     getAllUsers: builder.query<IUser[], void>({
-      query: () => "/admin/users",
-      providesTags: ["Users"],
+      query: () => '/admin/users',
+      providesTags: ['Users'],
     }),
-    updateUserRole: builder.mutation<{ message: string }, { id: string; role: "user" | "admin" }>({
+    updateUserRole: builder.mutation<
+      { message: string },
+      { id: string; role: 'user' | 'admin' }
+    >({
       query: ({ id, role }) => ({
         url: `/admin/users/${id}/role`,
-        method: "PATCH",
+        method: 'PATCH',
         body: { role },
       }),
-      invalidatesTags: ["Users"],
+      invalidatesTags: ['Users'],
     }),
     deleteUser: builder.mutation<{ message: string }, string>({
       query: (id) => ({
         url: `/admin/users/${id}`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
-      invalidatesTags: ["Users"],
+      invalidatesTags: ['Users'],
     }),
     getActivityLogs: builder.query<any[], void>({
-      query: () => "/admin/activity",
-      providesTags: ["ActivityLogs"],
+      query: () => '/admin/activity',
+      providesTags: ['ActivityLogs'],
     }),
   }),
-});
+})
 
 export const {
   useGetAllUsersQuery,
   useUpdateUserRoleMutation,
   useDeleteUserMutation,
   useGetActivityLogsQuery,
-} = useAdmin;
+} = useAdmin

@@ -1,18 +1,18 @@
-import { Bell } from "lucide-react";
-import type { IUser } from "@/types/User";
-import ProfileMenu from "./ProfileMenu";
-import UserDropdownMenu from "./UserDropdownMenu";
+import { Bell } from 'lucide-react'
+import type { IUser } from '@/types/User'
+import ProfileMenu from './ProfileMenu'
+import UserDropdownMenu from './UserDropdownMenu'
 
 interface NavbarProps {
-  user: IUser;
+  user: IUser
 }
 
 export default function Navbar({ user }: NavbarProps) {
   const notifications = [
-    { label: "New comment on task" },
-    { label: "Task due today" },
-    { label: "Team member joined" },
-  ];
+    { label: 'New comment on task' },
+    { label: 'Task due today' },
+    { label: 'Team member joined' },
+  ]
 
   return (
     <nav className="flex justify-between items-center px-4 py-4 border-b">
@@ -33,5 +33,5 @@ export default function Navbar({ user }: NavbarProps) {
         <ProfileMenu user={user} />
       </div>
     </nav>
-  );
+  )
 }

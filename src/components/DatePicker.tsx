@@ -1,57 +1,61 @@
-import * as React from "react";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { Input } from "@/components/ui/input";
-import { CalendarIcon } from "lucide-react";
-import { format, parse, isValid, startOfMonth } from "date-fns";
+import * as React from 'react'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import { Calendar } from '@/components/ui/calendar'
+import { Input } from '@/components/ui/input'
+import { CalendarIcon } from 'lucide-react'
+import { format, parse, isValid, startOfMonth } from 'date-fns'
 
 interface DatePickerProps {
-  value?: Date;
-  onChange: (date: Date | undefined) => void;
-  placeholder?: string;
-  error?: string;
+  value?: Date
+  onChange: (date: Date | undefined) => void
+  placeholder?: string
+  error?: string
 }
 
 export function DatePicker({
   value,
   onChange,
-  placeholder = "dd/mm/yyyy",
+  placeholder = 'dd/mm/yyyy',
   error,
 }: DatePickerProps) {
-  const [open, setOpen] = React.useState(false);
-  const [inputValue, setInputValue] = React.useState("");
+  const [open, setOpen] = React.useState(false)
+  const [inputValue, setInputValue] = React.useState('')
 
   React.useEffect(() => {
     if (value && isValid(value)) {
-      setInputValue(format(value, "dd/MM/yyyy"));
+      setInputValue(format(value, 'dd/MM/yyyy'))
     } else {
-      setInputValue("");
+      setInputValue('')
     }
-  }, [value]);
+  }, [value])
 
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    const allowed = /[0-9/]/;
+    const allowed = /[0-9/]/
     if (e.key.length === 1 && !allowed.test(e.key)) {
-      e.preventDefault();
+      e.preventDefault()
     }
-  };
+  }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const input = e.target.value.trim();
-    if (input.length > 10) return;
-    setInputValue(input);
+    const input = e.target.value.trim()
+    if (input.length > 10) return
+    setInputValue(input)
 
     if (input.length === 10) {
-      const parsed = parse(input, "dd/MM/yyyy", new Date());
+      const parsed = parse(input, 'dd/MM/yyyy', new Date())
       if (isValid(parsed)) {
-        onChange(parsed);
+        onChange(parsed)
       } else {
-        onChange(undefined);
+        onChange(undefined)
       }
     } else {
-      onChange(undefined);
+      onChange(undefined)
     }
-  };
+  }
 
   return (
     <div className="flex flex-col space-y-1">
@@ -61,7 +65,9 @@ export function DatePicker({
           value={inputValue}
           onKeyDown={handleInputKeyDown}
           onChange={handleInputChange}
-          className={error ? "border-red-500 focus-visible:ring-red-500 pr-10" : "pr-10"}
+          className={
+            error ? 'border-red-500 focus-visible:ring-red-500 pr-10' : 'pr-10'
+          }
         />
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
@@ -74,13 +80,15 @@ export function DatePicker({
             <Calendar
               mode="single"
               selected={value}
-              defaultMonth={value && isValid(value) ? startOfMonth(value) : undefined}
+              defaultMonth={
+                value && isValid(value) ? startOfMonth(value) : undefined
+              }
               captionLayout="dropdown"
               startMonth={new Date(2000, 0)}
               endMonth={new Date(2030, 11)}
               onSelect={(date) => {
-                onChange(date);
-                setOpen(false);
+                onChange(date)
+                setOpen(false)
               }}
             />
           </PopoverContent>
@@ -88,5 +96,5 @@ export function DatePicker({
       </div>
       {error && <p className="text-sm text-red-500">{error}</p>}
     </div>
-  );
+  )
 }

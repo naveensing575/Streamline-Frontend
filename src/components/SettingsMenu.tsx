@@ -1,16 +1,16 @@
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom'
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { Settings } from "lucide-react";
-import type { IUser } from "@/types/User";
+} from '@/components/ui/dropdown-menu'
+import { Button } from '@/components/ui/button'
+import { Settings } from 'lucide-react'
+import type { IUser } from '@/types/User'
 
 interface SettingsMenuProps {
-  user: IUser;
+  user: IUser
 }
 
 export default function SettingsMenu({ user }: SettingsMenuProps) {
@@ -22,7 +22,7 @@ export default function SettingsMenu({ user }: SettingsMenuProps) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {user?.role === "admin" && (
+        {user?.role === 'admin' && (
           <DropdownMenuItem asChild>
             <Link to="/admin/users">Manage Users</Link>
           </DropdownMenuItem>
@@ -32,5 +32,5 @@ export default function SettingsMenu({ user }: SettingsMenuProps) {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  );
+  )
 }

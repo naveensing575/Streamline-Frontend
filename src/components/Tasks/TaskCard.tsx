@@ -1,25 +1,25 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { GripVertical, MoreHorizontal, Loader2, Calendar } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { GripVertical, MoreHorizontal, Loader2, Calendar } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu'
 
 interface TaskCardProps {
-  title: string;
-  description?: string;
-  status: "todo" | "in-progress" | "done";
-  dueDate?: string;
-  subTasks?: string[];
-  dragListeners?: Record<string, any>;
-  dragAttributes?: Record<string, any>;
-  onEdit: () => void;
-  onBreakdown?: () => void;
-  isBreakingDown?: boolean;
-  onRequestDelete: () => void;
+  title: string
+  description?: string
+  status: 'todo' | 'in-progress' | 'done'
+  dueDate?: string
+  subTasks?: string[]
+  dragListeners?: Record<string, any>
+  dragAttributes?: Record<string, any>
+  onEdit: () => void
+  onBreakdown?: () => void
+  isBreakingDown?: boolean
+  onRequestDelete: () => void
 }
 
 export default function TaskCard({
@@ -36,12 +36,12 @@ export default function TaskCard({
   onRequestDelete,
 }: TaskCardProps) {
   const statusClasses = {
-    todo: "bg-yellow-100 text-yellow-800",
-    "in-progress": "bg-blue-100 text-blue-800",
-    done: "bg-green-100 text-green-800",
-  };
+    todo: 'bg-yellow-100 text-yellow-800',
+    'in-progress': 'bg-blue-100 text-blue-800',
+    done: 'bg-green-100 text-green-800',
+  }
 
-  const canBreakDown = onBreakdown && status !== "done" && !subTasks?.length;
+  const canBreakDown = onBreakdown && status !== 'done' && !subTasks?.length
 
   return (
     <Card className="w-full flex flex-col rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg transition-all hover:scale-[1.01] bg-white dark:bg-gray-800">
@@ -67,13 +67,19 @@ export default function TaskCard({
             </span>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="hover:bg-gray-100">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="hover:bg-gray-100"
+                >
                   <MoreHorizontal className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={onEdit}>Edit</DropdownMenuItem>
-                <DropdownMenuItem onClick={onRequestDelete}>Delete</DropdownMenuItem>
+                <DropdownMenuItem onClick={onRequestDelete}>
+                  Delete
+                </DropdownMenuItem>
                 {onBreakdown && (
                   <DropdownMenuItem
                     onClick={onBreakdown}
@@ -84,12 +90,12 @@ export default function TaskCard({
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         Generating...
                       </>
-                    ) : status === "done" ? (
-                      "Break Down (Disabled)"
+                    ) : status === 'done' ? (
+                      'Break Down (Disabled)'
                     ) : subTasks?.length ? (
-                      "Break Down (Done)"
+                      'Break Down (Done)'
                     ) : (
-                      "Break Down"
+                      'Break Down'
                     )}
                   </DropdownMenuItem>
                 )}
@@ -123,7 +129,7 @@ export default function TaskCard({
         {!isBreakingDown && subTasks && subTasks.length > 0 && (
           <div className="mt-2">
             <p className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
-              {subTasks.length} Subtask{subTasks.length > 1 ? "s" : ""}
+              {subTasks.length} Subtask{subTasks.length > 1 ? 's' : ''}
             </p>
             <ul className="text-xs text-gray-600 dark:text-gray-400 list-disc list-inside">
               {subTasks.map((sub, i) => (
@@ -134,5 +140,5 @@ export default function TaskCard({
         )}
       </CardContent>
     </Card>
-  );
+  )
 }

@@ -1,14 +1,14 @@
-"use client";
+'use client'
 
-import TimelineTaskBlock from "./TimelineTaskBlock";
+import TimelineTaskBlock from './TimelineTaskBlock'
 
 interface ResourceRowProps {
   user: {
-    id: number;
-    name: string;
-    role: string;
-  };
-  tasks: any[]; // Replace with proper type
+    id: number
+    name: string
+    role: string
+  }
+  tasks: any[] // Replace with proper type
 }
 
 export default function ResourceRow({ user, tasks }: ResourceRowProps) {
@@ -25,5 +25,5 @@ export default function ResourceRow({ user, tasks }: ResourceRowProps) {
         ))}
       </div>
     </div>
-  );
+  )
 }

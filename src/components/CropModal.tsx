@@ -1,17 +1,17 @@
 // components/CropModal.tsx
-"use client";
+'use client'
 
-import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
-import Cropper from "react-easy-crop";
-import { useState, useCallback } from "react";
-import getCroppedImg from "@/lib/cropImageUtils"
-import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog'
+import Cropper from 'react-easy-crop'
+import { useState, useCallback } from 'react'
+import getCroppedImg from '@/lib/cropImageUtils'
+import { Button } from '@/components/ui/button'
 
 interface CropModalProps {
-  open: boolean;
-  imageSrc: string;
-  onClose: () => void;
-  onCropComplete: (croppedFile: File) => void;
+  open: boolean
+  imageSrc: string
+  onClose: () => void
+  onCropComplete: (croppedFile: File) => void
 }
 
 export default function CropModal({
@@ -20,22 +20,22 @@ export default function CropModal({
   onClose,
   onCropComplete,
 }: CropModalProps) {
-  const [crop, setCrop] = useState({ x: 0, y: 0 });
-  const [zoom, setZoom] = useState(1);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
+  const [crop, setCrop] = useState({ x: 0, y: 0 })
+  const [zoom, setZoom] = useState(1)
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null)
 
   const handleCropComplete = useCallback((_: any, croppedAreaPixels: any) => {
-    setCroppedAreaPixels(croppedAreaPixels);
-  }, []);
+    setCroppedAreaPixels(croppedAreaPixels)
+  }, [])
 
   const handleDone = async () => {
-    const croppedBlob = await getCroppedImg(imageSrc, croppedAreaPixels);
-    const croppedFile = new File([croppedBlob], "cropped.jpg", {
-      type: "image/jpeg",
-    });
-    onCropComplete(croppedFile);
-    onClose();
-  };
+    const croppedBlob = await getCroppedImg(imageSrc, croppedAreaPixels)
+    const croppedFile = new File([croppedBlob], 'cropped.jpg', {
+      type: 'image/jpeg',
+    })
+    onCropComplete(croppedFile)
+    onClose()
+  }
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -54,10 +54,12 @@ export default function CropModal({
           />
         </div>
         <div className="flex justify-end gap-2 mt-4">
-          <Button variant="outline" onClick={onClose}>Cancel</Button>
+          <Button variant="outline" onClick={onClose}>
+            Cancel
+          </Button>
           <Button onClick={handleDone}>Save</Button>
         </div>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

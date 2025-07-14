@@ -1,62 +1,62 @@
-import { useRef, useState } from "react";
-import { User, UserPlus, Pencil, X, Loader2 } from "lucide-react";
+import { useRef, useState } from 'react'
+import { User, UserPlus, Pencil, X, Loader2 } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import CropModal from "@/components/CropModal";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+} from '@/components/ui/dropdown-menu'
+import { Button } from '@/components/ui/button'
+import CropModal from '@/components/CropModal'
+import { Dialog, DialogContent } from '@/components/ui/dialog'
 
 export default function ProfileAvatar({
   src,
   onChange,
   onDelete,
 }: {
-  src?: string;
-  onChange: (file: File | null) => Promise<void> | void;
-  onDelete: () => void;
+  src?: string
+  onChange: (file: File | null) => Promise<void> | void
+  onDelete: () => void
 }) {
-  const [isUploading, setIsUploading] = useState(false);
-  const [cropOpen, setCropOpen] = useState(false);
-  const [previewOpen, setPreviewOpen] = useState(false);
+  const [isUploading, setIsUploading] = useState(false)
+  const [cropOpen, setCropOpen] = useState(false)
+  const [previewOpen, setPreviewOpen] = useState(false)
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleFileInputClick = () => {
-    fileInputRef.current?.click();
-  };
+    fileInputRef.current?.click()
+  }
 
   const handleFileChange = async (file: File | null) => {
-    if (!file) return;
-    setIsUploading(true);
+    if (!file) return
+    setIsUploading(true)
     try {
-      await onChange(file);
+      await onChange(file)
     } finally {
-      setIsUploading(false);
+      setIsUploading(false)
     }
-  };
+  }
 
   const handleDelete = () => {
-    onDelete();
-    onChange(null);
-  };
+    onDelete()
+    onChange(null)
+  }
 
   const handleEdit = () => {
-    setCropOpen(true);
-  };
+    setCropOpen(true)
+  }
 
   const handleCropComplete = async (croppedFile: File) => {
-    setIsUploading(true);
+    setIsUploading(true)
     try {
-      await onChange(croppedFile);
+      await onChange(croppedFile)
     } finally {
-      setIsUploading(false);
-      setCropOpen(false);
+      setIsUploading(false)
+      setCropOpen(false)
     }
-  };
+  }
 
   return (
     <div className="relative w-32 h-32 mx-auto mb-4">
@@ -140,8 +140,8 @@ export default function ProfileAvatar({
             <Button
               variant="secondary"
               onClick={() => {
-                setPreviewOpen(false);
-                handleEdit();
+                setPreviewOpen(false)
+                handleEdit()
               }}
             >
               Edit
@@ -149,8 +149,8 @@ export default function ProfileAvatar({
             <Button
               variant="default"
               onClick={() => {
-                setPreviewOpen(false);
-                handleFileInputClick();
+                setPreviewOpen(false)
+                handleFileInputClick()
               }}
             >
               Update
@@ -159,5 +159,5 @@ export default function ProfileAvatar({
         </DialogContent>
       </Dialog>
     </div>
-  );
+  )
 }

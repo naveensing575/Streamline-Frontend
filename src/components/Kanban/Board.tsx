@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import {
   DndContext,
@@ -8,36 +8,36 @@ import {
   useSensors,
   DragOverlay,
   useDroppable,
-} from "@dnd-kit/core";
+} from '@dnd-kit/core'
 import {
   SortableContext,
   useSortable,
   verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { type Task } from "@/components/Tasks/TaskList";
-import TaskItem from "@/components/Tasks/TaskCard";
-import { useEffect, useState } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
+} from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
+import { type Task } from '@/components/Tasks/TaskList'
+import TaskItem from '@/components/Tasks/TaskCard'
+import { useEffect, useState } from 'react'
+import { Skeleton } from '@/components/ui/skeleton'
 
 interface BoardProps {
-  tasks: Task[];
-  onEdit: (task: Task) => void;
-  onRequestDelete: (taskId: string) => void;
+  tasks: Task[]
+  onEdit: (task: Task) => void
+  onRequestDelete: (taskId: string) => void
   onStatusChange: (
     taskId: string,
-    newStatus: "todo" | "in-progress" | "done"
-  ) => void;
-  onBreakdown: (taskId: string) => void;
-  loadingTaskId: string | null;
-  isLoading: boolean; // ✅ external loading prop from Dashboard
+    newStatus: 'todo' | 'in-progress' | 'done',
+  ) => void
+  onBreakdown: (taskId: string) => void
+  loadingTaskId: string | null
+  isLoading: boolean // ✅ external loading prop from Dashboard
 }
 
-const statuses: Array<"todo" | "in-progress" | "done"> = [
-  "todo",
-  "in-progress",
-  "done",
-];
+const statuses: Array<'todo' | 'in-progress' | 'done'> = [
+  'todo',
+  'in-progress',
+  'done',
+]
 
 export default function Board({
   tasks,
@@ -48,60 +48,60 @@ export default function Board({
   loadingTaskId,
   isLoading, // from parent
 }: BoardProps) {
-  const sensors = useSensors(useSensor(PointerSensor));
-  const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
+  const sensors = useSensors(useSensor(PointerSensor))
+  const [activeTaskId, setActiveTaskId] = useState<string | null>(null)
 
   // ✅ Local state to guarantee min skeleton duration
-  const [showSkeleton, setShowSkeleton] = useState(isLoading);
+  const [showSkeleton, setShowSkeleton] = useState(isLoading)
 
   useEffect(() => {
-    let timeout: NodeJS.Timeout | null = null;
+    let timeout: NodeJS.Timeout | null = null
 
     if (isLoading) {
-      setShowSkeleton(true);
+      setShowSkeleton(true)
     } else {
       timeout = setTimeout(() => {
-        setShowSkeleton(false);
-      }, 2000);
+        setShowSkeleton(false)
+      }, 2000)
     }
 
     return () => {
-      if (timeout) clearTimeout(timeout);
-    };
-  }, [isLoading]);
+      if (timeout) clearTimeout(timeout)
+    }
+  }, [isLoading])
 
   const handleDragStart = (event: any) => {
-    setActiveTaskId(event.active.id);
-  };
+    setActiveTaskId(event.active.id)
+  }
 
   const handleDragEnd = (event: any) => {
-    const { active, over } = event;
-    setActiveTaskId(null);
-    if (!over) return;
+    const { active, over } = event
+    setActiveTaskId(null)
+    if (!over) return
 
-    const activeId = active.id;
-    const overId = over.id;
+    const activeId = active.id
+    const overId = over.id
 
-    const draggedTask = tasks.find((task) => task._id === activeId);
-    if (!draggedTask) return;
+    const draggedTask = tasks.find((task) => task._id === activeId)
+    if (!draggedTask) return
 
-    let newStatus: "todo" | "in-progress" | "done" | undefined;
+    let newStatus: 'todo' | 'in-progress' | 'done' | undefined
 
     if (statuses.includes(overId)) {
-      newStatus = overId as typeof newStatus;
+      newStatus = overId as typeof newStatus
     } else {
-      const overTask = tasks.find((task) => task._id === overId);
+      const overTask = tasks.find((task) => task._id === overId)
       if (overTask) {
-        newStatus = overTask.status;
+        newStatus = overTask.status
       }
     }
 
-    if (!newStatus) return;
+    if (!newStatus) return
 
     if (draggedTask.status !== newStatus) {
-      onStatusChange(draggedTask._id, newStatus);
+      onStatusChange(draggedTask._id, newStatus)
     }
-  };
+  }
 
   return (
     <DndContext
@@ -142,7 +142,7 @@ export default function Board({
         ) : null}
       </DragOverlay>
     </DndContext>
-  );
+  )
 }
 
 function DroppableColumn({
@@ -155,16 +155,16 @@ function DroppableColumn({
   activeTaskId,
   isLoading,
 }: {
-  id: string;
-  tasks: Task[];
-  onEdit: (task: Task) => void;
-  onRequestDelete: (taskId: string) => void;
-  onBreakdown: (taskId: string) => void;
-  loadingTaskId: string | null;
-  activeTaskId: string | null;
-  isLoading: boolean; // ✅ local flag with timeout
+  id: string
+  tasks: Task[]
+  onEdit: (task: Task) => void
+  onRequestDelete: (taskId: string) => void
+  onBreakdown: (taskId: string) => void
+  loadingTaskId: string | null
+  activeTaskId: string | null
+  isLoading: boolean // ✅ local flag with timeout
 }) {
-  const { setNodeRef } = useDroppable({ id });
+  const { setNodeRef } = useDroppable({ id })
 
   return (
     <div
@@ -172,7 +172,7 @@ function DroppableColumn({
       className="flex-shrink-0 w-[280px] sm:flex-1 bg-gray-50 dark:bg-gray-800 rounded p-4 min-h-[500px]"
     >
       <h2 className="text-base sm:text-lg font-semibold capitalize mb-2">
-        {id.replace("-", " ")}
+        {id.replace('-', ' ')}
       </h2>
 
       {isLoading ? (
@@ -200,7 +200,7 @@ function DroppableColumn({
         </SortableContext>
       )}
     </div>
-  );
+  )
 }
 
 function SortableTask({
@@ -211,29 +211,29 @@ function SortableTask({
   loadingTaskId,
   activeTaskId,
 }: {
-  task: Task;
-  onEdit: (task: Task) => void;
-  onRequestDelete: (taskId: string) => void;
-  onBreakdown: (taskId: string) => void;
-  loadingTaskId: string | null;
-  activeTaskId: string | null;
+  task: Task
+  onEdit: (task: Task) => void
+  onRequestDelete: (taskId: string) => void
+  onBreakdown: (taskId: string) => void
+  loadingTaskId: string | null
+  activeTaskId: string | null
 }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: task._id });
+    useSortable({ id: task._id })
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-  };
+  }
 
-  const isDragging = activeTaskId === task._id;
+  const isDragging = activeTaskId === task._id
 
   return (
     <div
       ref={setNodeRef}
       style={style}
       {...attributes}
-      className={`mb-2 ${isDragging ? "opacity-50" : ""}`}
+      className={`mb-2 ${isDragging ? 'opacity-50' : ''}`}
     >
       <TaskItem
         title={task.title}
@@ -249,5 +249,5 @@ function SortableTask({
         isBreakingDown={loadingTaskId === task._id}
       />
     </div>
-  );
+  )
 }

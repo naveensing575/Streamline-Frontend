@@ -1,9 +1,9 @@
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
-import { Link } from "react-router-dom"
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
+import { Link } from 'react-router-dom'
 
-import { Button } from "@/components/ui/button"
+import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -11,12 +11,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
 
 const formSchema = z.object({
-  email: z.string().nonempty({ message: "Email is required." }),
-  password: z.string().nonempty({ message: "Password is required." }),
+  email: z.string().nonempty({ message: 'Email is required.' }),
+  password: z.string().nonempty({ message: 'Password is required.' }),
 })
 
 export default function LoginForm({
@@ -27,8 +27,8 @@ export default function LoginForm({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
   })
 
@@ -36,7 +36,7 @@ export default function LoginForm({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit((values) =>
-          onSubmit(values.email, values.password)
+          onSubmit(values.email, values.password),
         )}
         className="space-y-4 bg-white p-8 rounded-md shadow-md w-full max-w-md"
       >
@@ -75,7 +75,7 @@ export default function LoginForm({
         </Button>
 
         <p className="text-center text-sm text-gray-600 mt-4">
-          Don&apos;t have an account?{" "}
+          Don&apos;t have an account?{' '}
           <Link to="/register" className="text-blue-600 hover:underline">
             Register here
           </Link>

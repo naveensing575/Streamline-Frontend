@@ -1,54 +1,54 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { Task } from "@/types/Task";
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import type { Task } from '@/types/Task'
 
 export const useTasks = createApi({
-  reducerPath: "useTasks",
+  reducerPath: 'useTasks',
   baseQuery: fetchBaseQuery({
     baseUrl: import.meta.env.VITE_API_URL,
     prepareHeaders: (headers) => {
-      const token = localStorage.getItem("token");
-      if (token) headers.set("authorization", `Bearer ${token}`);
-      return headers;
+      const token = localStorage.getItem('token')
+      if (token) headers.set('authorization', `Bearer ${token}`)
+      return headers
     },
   }),
-  tagTypes: ["Tasks"],
+  tagTypes: ['Tasks'],
   endpoints: (builder) => ({
     getTasks: builder.query<Task[], void>({
-      query: () => "/tasks",
-      providesTags: ["Tasks"],
+      query: () => '/tasks',
+      providesTags: ['Tasks'],
     }),
     addTask: builder.mutation({
       query: (task) => ({
-        url: "/tasks",
-        method: "POST",
+        url: '/tasks',
+        method: 'POST',
         body: task,
       }),
-      invalidatesTags: ["Tasks"],
+      invalidatesTags: ['Tasks'],
     }),
     editTask: builder.mutation({
       query: ({ id, updates }) => ({
         url: `/tasks/${id}`,
-        method: "PUT",
+        method: 'PUT',
         body: updates,
       }),
-      invalidatesTags: ["Tasks"],
+      invalidatesTags: ['Tasks'],
     }),
     deleteTask: builder.mutation({
       query: (id) => ({
         url: `/tasks/${id}`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
-      invalidatesTags: ["Tasks"],
+      invalidatesTags: ['Tasks'],
     }),
     breakdownTask: builder.mutation({
       query: (id) => ({
         url: `/tasks/${id}/breakdown`,
-        method: "POST",
+        method: 'POST',
       }),
-      invalidatesTags: ["Tasks"],
+      invalidatesTags: ['Tasks'],
     }),
   }),
-});
+})
 
 export const {
   useGetTasksQuery,
@@ -56,4 +56,4 @@ export const {
   useEditTaskMutation,
   useDeleteTaskMutation,
   useBreakdownTaskMutation,
-} = useTasks;
+} = useTasks

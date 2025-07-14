@@ -7,25 +7,25 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
   AlertDialogAction,
-} from "@/components/ui/alert-dialog";
+} from '@/components/ui/alert-dialog'
 
 interface ConfirmDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  title?: string;
-  description?: string;
-  confirmText?: string;
-  cancelText?: string;
-  onConfirm: () => void;
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  title?: string
+  description?: string
+  confirmText?: string
+  cancelText?: string
+  onConfirm: () => void
 }
 
 export default function ConfirmDialog({
   open,
   onOpenChange,
-  title = "Are you sure?",
-  description = "This action cannot be undone.",
-  confirmText = "Confirm",
-  cancelText = "Cancel",
+  title = 'Are you sure?',
+  description = 'This action cannot be undone.',
+  confirmText = 'Confirm',
+  cancelText = 'Cancel',
   onConfirm,
 }: ConfirmDialogProps) {
   return (
@@ -45,5 +45,5 @@ export default function ConfirmDialog({
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-  );
+  )
 }

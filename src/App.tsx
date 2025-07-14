@@ -1,17 +1,17 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Register from "@/pages/Register";
-import Login from "@/pages/Login";
-import Dashboard from "@/pages/Dashboard";
-import Kanban from "@/pages/Kanban";
-import Timeline from "@/pages/Timeline";
-import Inventory from "@/pages/Inventory";
-import Logistics from "@/pages/Logistics";
-import NotFound from "@/pages/NotFound";
-import ManageUsers from "@/pages/ManageUsers";
-import Profile from "@/pages/Profile";
-import PrivateRoute from "@/components/PrivateRoute";
-import Layout from "@/components/Layout";
-import { Toaster } from "@/components/ui/sonner";
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import Register from '@/pages/Register'
+import Login from '@/pages/Login'
+import Dashboard from '@/pages/Dashboard'
+import Kanban from '@/pages/Kanban'
+import Timeline from '@/pages/Timeline'
+import Inventory from '@/pages/Inventory'
+import Logistics from '@/pages/Logistics'
+import NotFound from '@/pages/NotFound'
+import ManageUsers from '@/pages/ManageUsers'
+import Profile from '@/pages/Profile'
+import PrivateRoute from '@/components/PrivateRoute'
+import Layout from '@/components/Layout'
+import { Toaster } from '@/components/ui/sonner'
 
 export default function App() {
   return (
@@ -39,5 +39,5 @@ export default function App() {
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
-  );
+  )
 }
