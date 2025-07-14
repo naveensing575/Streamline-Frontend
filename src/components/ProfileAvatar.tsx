@@ -1,14 +1,14 @@
-"use client";
-
-import { useState } from "react";
-import { User, Pencil, X, Loader2 } from "lucide-react";
+import { useRef, useState } from "react";
+import { User, UserPlus, Pencil, X, Loader2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 import CropModal from "@/components/CropModal";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 export default function ProfileAvatar({
   src,
@@ -21,10 +21,16 @@ export default function ProfileAvatar({
 }) {
   const [isUploading, setIsUploading] = useState(false);
   const [cropOpen, setCropOpen] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileInputClick = () => {
+    fileInputRef.current?.click();
+  };
 
   const handleFileChange = async (file: File | null) => {
     if (!file) return;
-
     setIsUploading(true);
     try {
       await onChange(file);
@@ -39,7 +45,7 @@ export default function ProfileAvatar({
   };
 
   const handleEdit = () => {
-    if (src) setCropOpen(true);
+    setCropOpen(true);
   };
 
   const handleCropComplete = async (croppedFile: File) => {
@@ -54,8 +60,10 @@ export default function ProfileAvatar({
 
   return (
     <div className="relative w-32 h-32 mx-auto mb-4">
-      {/* Profile image wrapper */}
-      <div className="w-32 h-32 rounded-full overflow-hidden relative">
+      <div
+        className="w-32 h-32 rounded-full overflow-hidden relative cursor-pointer"
+        onClick={() => src && setPreviewOpen(true)}
+      >
         {isUploading ? (
           <div className="w-full h-full flex items-center justify-center bg-gray-100">
             <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
@@ -65,15 +73,16 @@ export default function ProfileAvatar({
             src={src}
             alt="Profile"
             className="w-full h-full object-cover"
+            draggable="false"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400">
+          <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400 relative">
             <User className="w-16 h-16" />
+            <UserPlus className="w-6 h-6 text-blue-500 absolute bottom-2 right-2" />
           </div>
         )}
       </div>
 
-      {/* Edit / Upload Dropdown */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button
@@ -85,23 +94,20 @@ export default function ProfileAvatar({
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem onClick={handleEdit}>Edit Photo</DropdownMenuItem>
-          <DropdownMenuItem>
-            <label className="cursor-pointer">
-              Upload New
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) =>
-                  handleFileChange(e.target.files?.[0] || null)
-                }
-                className="hidden"
-              />
-            </label>
+          <DropdownMenuItem onClick={handleFileInputClick}>
+            Upload New
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* Delete Button */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
+        className="hidden"
+      />
+
       {src && !isUploading && (
         <button
           type="button"
@@ -112,7 +118,6 @@ export default function ProfileAvatar({
         </button>
       )}
 
-      {/* Crop Modal */}
       {src && (
         <CropModal
           open={cropOpen}
@@ -121,6 +126,38 @@ export default function ProfileAvatar({
           onCropComplete={handleCropComplete}
         />
       )}
+
+      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+        <DialogContent className="flex flex-col items-center gap-4 p-6 max-w-md rounded-2xl shadow-lg bg-white">
+          {src && (
+            <img
+              src={src}
+              alt="Full Preview"
+              className="max-w-full max-h-[300px] rounded-lg object-cover"
+            />
+          )}
+          <div className="flex gap-4">
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setPreviewOpen(false);
+                handleEdit();
+              }}
+            >
+              Edit
+            </Button>
+            <Button
+              variant="default"
+              onClick={() => {
+                setPreviewOpen(false);
+                handleFileInputClick();
+              }}
+            >
+              Update
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

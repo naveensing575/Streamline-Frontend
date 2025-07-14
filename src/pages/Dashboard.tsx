@@ -1,6 +1,9 @@
 "use client";
 
 import { useOutletContext } from "react-router-dom";
+import { useState } from "react";
+import { toast } from "sonner";
+
 import KanbanBoard from "@/components/Kanban/KanbanBoard";
 import TimelineBoard from "@/components/Timeline/TimelineBoard";
 import AddTaskTrigger from "@/components/Tasks/AddTaskTrigger";
@@ -18,8 +21,6 @@ import {
   useBreakdownTaskMutation,
 } from "@/features/useTasks";
 
-import { toast } from "sonner";
-import { useState } from "react";
 import { type Task } from "@/components/Tasks/TaskList";
 
 export default function Dashboard() {
@@ -88,11 +89,11 @@ export default function Dashboard() {
   return (
     <div className="flex flex-col h-full w-full overflow-hidden">
       {/* Tabs and Navbar */}
-      <div className="flex justify-between items-end flex-wrap gap-4 mb-0">
+      <div className="flex justify-between items-end flex-wrap gap-4 mt-3">
         <div className="flex gap-2 border-b border-gray-200">
           <button
             onClick={() => setBoardType("kanban")}
-            className={`px-4 pt-2 pb-5 border rounded-t-xl font-semibold tracking-wide transition-colors duration-300 cursor-pointer ${
+            className={`px-4 pt-2 pb-6 border rounded-t-xl font-semibold tracking-wide transition-colors duration-300 cursor-pointer ${
               boardType === "kanban"
                 ? "bg-white border-b-0 text-black"
                 : "bg-gray-100 text-gray-500"
@@ -102,7 +103,7 @@ export default function Dashboard() {
           </button>
           <button
             onClick={() => setBoardType("timeline")}
-            className={`px-4 pt-2 pb-5 border rounded-t-xl font-semibold tracking-wide transition-colors duration-300 cursor-pointer ${
+            className={`px-4 pt-2 pb-6 border rounded-t-xl font-semibold tracking-wide transition-colors duration-300 cursor-pointer ${
               boardType === "timeline"
                 ? "bg-white border-b-0 text-black"
                 : "bg-gray-100 text-gray-500"
@@ -115,8 +116,8 @@ export default function Dashboard() {
         <Navbar user={user} />
       </div>
 
-      {/* Main scroll area */}
-      <div className="flex flex-col flex-1 overflow-hidden rounded-xl bg-white border shadow p-6">
+      {/* Attached Content Body */}
+      <div className="flex flex-col flex-1 overflow-hidden rounded-tl-none rounded-tr-xl rounded-b-xl bg-white border shadow p-6 -mt-px">
         {boardType === "kanban" && (
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
             <h1 className="text-xl sm:text-2xl font-bold">
