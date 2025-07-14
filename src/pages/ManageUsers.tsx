@@ -109,6 +109,7 @@ export default function ManageUsers() {
                     <Button
                       variant="destructive"
                       size="sm"
+                      className="hover: cursor-pointer"
                       onClick={() => setOpenDialogId(u._id)}
                     >
                       Delete
