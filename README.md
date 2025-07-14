@@ -1,4 +1,4 @@
-# 🚀 React + TypeScript + Vite Frontend - Streamline
+# Streamline - Frontend
 
 This is a modern **Vite + React + TypeScript** project for a **task management dashboard**.  
 It uses **shadcn/ui**, **TailwindCSS**, **Tiptap** for rich text editing, **DND Kit** for drag-and-drop,  
