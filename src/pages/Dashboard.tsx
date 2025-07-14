@@ -1,5 +1,3 @@
-'use client'
-
 import { useOutletContext } from 'react-router-dom'
 import { useState } from 'react'
 import { toast } from 'sonner'
@@ -11,6 +9,7 @@ import StopwatchModal from '@/components/StopwatchModal'
 import EditTaskTrigger from '@/components/Tasks/EditTaskTrigger'
 import Navbar from '@/components/Navbar'
 import ConfirmDialog from '@/components/ConfirmDialog'
+import { Loader2 } from 'lucide-react'
 
 import { useGetMeQuery } from '@/features/useAuth'
 import {
@@ -86,32 +85,71 @@ export default function Dashboard() {
     }
   }
 
+  const renderBoardContent = () => {
+    if (isLoading) {
+      return (
+        <div className="flex items-center justify-center flex-1">
+          <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+        </div>
+      )
+    }
+
+    if (boardType === 'kanban') {
+      return (
+        <KanbanBoard
+          tasks={tasks || []}
+          onEdit={(task) => setSelectedTask(task)}
+          onRequestDelete={handleRequestDelete}
+          onStatusChange={async (taskId, newStatus) => {
+            try {
+              await editTask({
+                id: taskId,
+                updates: { status: newStatus },
+              }).unwrap()
+              toast.success(`Status updated to ${newStatus}`)
+            } catch {
+              toast.error('Failed to update status.')
+            }
+          }}
+          onBreakdown={breakdownTask}
+          loadingTaskId={null}
+          isLoading={isLoading}
+        />
+      )
+    }
+
+    return <TimelineBoard />
+  }
+
   return (
     <div className="flex flex-col h-full w-full overflow-hidden">
       {/* Tabs and Navbar */}
-      <div className="flex justify-between items-end flex-wrap gap-4 mt-3">
-        <div className="flex gap-2 border-b border-gray-200">
-          <button
-            onClick={() => setBoardType('kanban')}
-            className={`px-4 pt-2 pb-6 border rounded-t-xl font-semibold tracking-wide transition-colors duration-300 cursor-pointer ${
-              boardType === 'kanban'
-                ? 'bg-white border-b-0 text-black'
-                : 'bg-gray-100 text-gray-500'
-            }`}
-          >
-            Kanban Board
-          </button>
-          <button
-            onClick={() => setBoardType('timeline')}
-            className={`px-4 pt-2 pb-6 border rounded-t-xl font-semibold tracking-wide transition-colors duration-300 cursor-pointer ${
-              boardType === 'timeline'
-                ? 'bg-white border-b-0 text-black'
-                : 'bg-gray-100 text-gray-500'
-            }`}
-          >
-            Timeline Board
-          </button>
+      <div className="flex justify-between items-end flex-wrap">
+      <div className="flex gap-4 border-b border-gray-200">
+          {[
+            { type: 'timeline', label: 'Timeline board' },
+            { type: 'kanban', label: 'Kanban board' },
+          ].map((tab) => {
+            const isActive = boardType === tab.type
+            return (
+              <button
+                key={tab.type}
+                onClick={() => setBoardType(tab.type as 'kanban' | 'timeline')}
+                className={`px-5 py-3 rounded-t-xl font-semibold transition-colors duration-300 cursor-pointer text-sm
+                  flex items-center justify-center
+                  ${
+                    isActive
+                      ? 'bg-white text-black border border-b-0'
+                      : 'bg-[#F8F9F8] text-gray-400 border border-transparent'
+                  }
+                `}
+              >
+                {tab.label}
+              </button>
+            )
+          })}
         </div>
+
 
         <Navbar user={user} />
       </div>
@@ -132,29 +170,7 @@ export default function Dashboard() {
         )}
 
         <div className="flex-1 overflow-hidden scrollbar-hide transition-opacity duration-500 ease-in-out">
-          {boardType === 'kanban' ? (
-            <KanbanBoard
-              tasks={tasks || []}
-              onEdit={(task) => setSelectedTask(task)}
-              onRequestDelete={handleRequestDelete}
-              onStatusChange={async (taskId, newStatus) => {
-                try {
-                  await editTask({
-                    id: taskId,
-                    updates: { status: newStatus },
-                  }).unwrap()
-                  toast.success(`Status updated to ${newStatus}`)
-                } catch {
-                  toast.error('Failed to update status.')
-                }
-              }}
-              onBreakdown={breakdownTask}
-              loadingTaskId={null}
-              isLoading={isLoading}
-            />
-          ) : (
-            <TimelineBoard />
-          )}
+          {renderBoardContent()}
         </div>
       </div>
 

@@ -7,23 +7,30 @@ interface ResourceRowProps {
     id: number
     name: string
     role: string
+    tasks: {
+      title: string
+      start: number
+      end: number
+    }[]
   }
-  tasks: any[] // Replace with proper type
+  timeSlots: string[]
 }
 
-export default function ResourceRow({ user, tasks }: ResourceRowProps) {
+export default function ResourceRow({ user, timeSlots }: ResourceRowProps) {
   return (
-    <div className="flex items-center border-b py-2">
-      <div className="w-48 flex-shrink-0 pr-4">
-        <p className="font-semibold">{user.name}</p>
-        <p className="text-xs text-gray-500">{user.role}</p>
-      </div>
-      <div className="flex-1 relative border-l pl-4">
-        {/* Example dummy task */}
-        {tasks.map((task, idx) => (
-          <TimelineTaskBlock key={idx} task={task} />
-        ))}
-      </div>
+    <div className="relative border-b flex w-[max-content]">
+      {/* Timeline slots background */}
+      {timeSlots.map((_, idx) => (
+        <div
+          key={idx}
+          className="w-[100px] h-[80px] border-l last:border-r"
+        ></div>
+      ))}
+
+      {/* Tasks */}
+      {user.tasks.map((task, idx) => (
+        <TimelineTaskBlock key={idx} task={task} />
+      ))}
     </div>
   )
 }
