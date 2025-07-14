@@ -130,7 +130,7 @@ export default function Dashboard() {
           </div>
         )}
 
-        <div className="flex-1 overflow-auto scrollbar-hide transition-opacity duration-500 ease-in-out">
+        <div className="flex-1 overflow-hidden scrollbar-hide transition-opacity duration-500 ease-in-out">
           {boardType === "kanban" ? (
             <KanbanBoard
               tasks={tasks || []}

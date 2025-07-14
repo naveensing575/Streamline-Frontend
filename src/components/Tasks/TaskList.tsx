@@ -1,4 +1,4 @@
-import TaskItem from "./TaskItem"
+import TaskItem from "./TaskCard"
 
 export interface Task {
   subTasks: string[] | undefined
