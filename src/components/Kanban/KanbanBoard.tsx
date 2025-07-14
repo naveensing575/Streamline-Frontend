@@ -8,6 +8,7 @@ interface KanbanBoardProps {
   onStatusChange: (taskId: string, newStatus: string) => void;
   onBreakdown: (taskId: string) => void;
   loadingTaskId: string | null;
+  isLoading: boolean;
 }
 
 export default function KanbanBoard({
@@ -17,6 +18,7 @@ export default function KanbanBoard({
   onStatusChange,
   onBreakdown,
   loadingTaskId,
+  isLoading
 }: KanbanBoardProps) {
   return (
     <Board
@@ -26,6 +28,7 @@ export default function KanbanBoard({
       onStatusChange={onStatusChange}
       onBreakdown={onBreakdown}
       loadingTaskId={loadingTaskId}
+      isLoading={isLoading}
     />
   );
 }

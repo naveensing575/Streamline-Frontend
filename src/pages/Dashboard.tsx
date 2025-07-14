@@ -20,7 +20,6 @@ import {
 
 import { toast } from "sonner";
 import { useState } from "react";
-import { Loader2 } from "lucide-react";
 import { type Task } from "@/components/Tasks/TaskList";
 
 export default function Dashboard() {
@@ -116,7 +115,7 @@ export default function Dashboard() {
         <Navbar user={user} />
       </div>
 
-      {/* Attached body content */}
+      {/* Body content */}
       <div className="bg-white border-t-0 border-r border-b border-gray-200 rounded-br-2xl rounded-tr-2xl rounded-bl-2xl shadow px-6 pt-10 pb-6">
         {boardType === "kanban" && (
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10">
@@ -124,46 +123,40 @@ export default function Dashboard() {
               Welcome, {user.name}
             </h1>
 
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-6 w-full sm:w-auto">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 w-full sm:w-auto">
               <AddTaskTrigger onAddTask={handleAddTask} />
               <StopwatchModal />
             </div>
           </div>
         )}
 
-        {isLoading ? (
-          <div className="flex justify-center items-center py-20">
-            <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
-          </div>
-        ) : (
-          <div className="transition-opacity duration-500 ease-in-out">
-            {boardType === "kanban" ? (
-              <KanbanBoard
-                tasks={tasks || []}
-                onEdit={(task) => setSelectedTask(task)}
-                onRequestDelete={handleRequestDelete}
-                onStatusChange={async (taskId, newStatus) => {
-                  try {
-                    await editTask({
-                      id: taskId,
-                      updates: { status: newStatus },
-                    }).unwrap();
-                    toast.success(`Status updated to ${newStatus}`);
-                  } catch {
-                    toast.error("Failed to update status.");
-                  }
-                }}
-                onBreakdown={breakdownTask}
-                loadingTaskId={null}
-              />
-            ) : (
-              <TimelineBoard />
-            )}
-          </div>
-        )}
+        <div className="transition-opacity duration-500 ease-in-out">
+          {boardType === "kanban" ? (
+            <KanbanBoard
+              tasks={tasks || []}
+              onEdit={(task) => setSelectedTask(task)}
+              onRequestDelete={handleRequestDelete}
+              onStatusChange={async (taskId, newStatus) => {
+                try {
+                  await editTask({
+                    id: taskId,
+                    updates: { status: newStatus },
+                  }).unwrap();
+                  toast.success(`Status updated to ${newStatus}`);
+                } catch {
+                  toast.error("Failed to update status.");
+                }
+              }}
+              onBreakdown={breakdownTask}
+              loadingTaskId={null}
+              isLoading={isLoading}
+            />
+          ) : (
+            <TimelineBoard />
+          )}
+        </div>
       </div>
 
-      {/* Edit Task Modal */}
       {selectedTask && (
         <EditTaskTrigger
           task={selectedTask}
@@ -172,7 +165,6 @@ export default function Dashboard() {
         />
       )}
 
-      {/* Reusable Confirm Dialog for Delete */}
       <ConfirmDialog
         open={deleteConfirmOpen}
         onOpenChange={setDeleteConfirmOpen}
