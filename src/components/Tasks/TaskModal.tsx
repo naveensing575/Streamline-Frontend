@@ -176,12 +176,12 @@ export default function TaskModal({
             name="description"
             control={control}
             render={() => (
-              <div className="rounded min-h-[150px] max-h-[250px] overflow-y-auto pb-2 prose relative">
+              <div className="relative border border-gray-300 rounded min-h-[150px] max-h-[250px] overflow-y-auto">
                 <EditorContent
                   editor={editor}
-                  className="focus:outline-none border-none"
+                  className="focus:outline-none p-2"
                 />
-                {!watch('description') && (
+                {editor && editor.getText().trim().length === 0 && (
                   <span className="absolute top-2 left-2 text-sm text-gray-400 pointer-events-none">
                     Add a description...
                   </span>
@@ -189,6 +189,7 @@ export default function TaskModal({
               </div>
             )}
           />
+
 
           {/* Status */}
           <div>
