@@ -23,6 +23,12 @@ import * as z from "zod";
 import { DatePicker } from "@/components/DatePicker";
 import { type Task } from "@/components/Tasks/TaskList";
 
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Underline from "@tiptap/extension-underline";
+import Link from "@tiptap/extension-link";
+import TiptapToolbar from "@/components/TiptapToolbar";
+
 const formSchema = z.object({
   title: z.string().min(1, { message: "Title is required" }),
   description: z.string().optional(),
@@ -71,6 +77,23 @@ export default function TaskModal({
     },
   });
 
+  const editor = useEditor({
+    extensions: [
+      StarterKit.configure({
+        underline: false,
+        link: false,
+      }),
+      Underline,
+      Link,
+    ],
+    content: watch("description") || "",
+    onUpdate: ({ editor }) => {
+      const html = editor.getHTML();
+      setValue("description", html);
+    },
+  });
+  
+
   React.useEffect(() => {
     if (defaultTask && mode === "edit") {
       reset({
@@ -79,6 +102,7 @@ export default function TaskModal({
         status: defaultTask.status,
         dueDate: defaultTask.dueDate ? new Date(defaultTask.dueDate) : undefined,
       });
+      editor?.commands.setContent(defaultTask.description || "");
     } else if (mode === "add") {
       reset({
         title: "",
@@ -86,24 +110,19 @@ export default function TaskModal({
         status: "todo",
         dueDate: undefined,
       });
+      editor?.commands.clearContent();
     }
-  }, [defaultTask, mode, reset]);
+  }, [defaultTask, mode, reset, editor]);
 
   const handleFormSubmit = (values: z.infer<typeof formSchema>) => {
     const cleaned = {
       title: values.title.trim(),
-      description: values.description?.trim(),
+      description: values.description,
       status: values.status,
       dueDate: values.dueDate,
     };
 
-    onSubmit({
-      title: cleaned.title,
-      description: cleaned.description || undefined,
-      status: cleaned.status,
-      dueDate: cleaned.dueDate,
-    });
-
+    onSubmit(cleaned);
     reset();
     setOpen(false);
   };
@@ -111,7 +130,7 @@ export default function TaskModal({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="w-[90vw] max-w-md sm:max-w-lg">
-      <DialogHeader>
+        <DialogHeader>
           <DialogTitle className="text-lg sm:text-xl">
             {mode === "add" ? "Create a New Task" : "Edit Task"}
           </DialogTitle>
@@ -121,10 +140,8 @@ export default function TaskModal({
               : "Update your task details below."}
           </DialogDescription>
         </DialogHeader>
-        <form
-          onSubmit={handleSubmit(handleFormSubmit)}
-          className="space-y-4"
-        >
+
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
           {/* Title */}
           <div>
             <Input
@@ -141,22 +158,32 @@ export default function TaskModal({
             )}
           </div>
 
-          {/* Description */}
-          <Input placeholder="Description" {...register("description")} />
+          {/* Tiptap Editor */}
+          {editor && <TiptapToolbar editor={editor} />}
+          <Controller
+            name="description"
+            control={control}
+            render={() => (
+              <div className="border rounded p-2 min-h-[150px] max-h-[250px] overflow-y-auto pb-4">
+                <EditorContent editor={editor} className="prose focus:outline-none" />
+              </div>
+            )}
+          />
+          {errors.description && (
+            <p className="text-sm text-red-500 mt-1">
+              {errors.description.message}
+            </p>
+          )}
 
           {/* Status */}
           <div>
             <Select
               value={watch("status")}
-              onValueChange={(value) =>
-                setValue("status", value as any)
-              }
+              onValueChange={(value) => setValue("status", value as any)}
             >
               <SelectTrigger
                 className={
-                  errors.status
-                    ? "border-red-500 focus-visible:ring-red-500"
-                    : ""
+                  errors.status ? "border-red-500 focus-visible:ring-red-500" : ""
                 }
               >
                 <SelectValue placeholder="Select status" />
@@ -168,9 +195,7 @@ export default function TaskModal({
               </SelectContent>
             </Select>
             {errors.status && (
-              <p className="text-sm text-red-500 mt-1">
-                Status is required
-              </p>
+              <p className="text-sm text-red-500 mt-1">Status is required</p>
             )}
           </div>
 
