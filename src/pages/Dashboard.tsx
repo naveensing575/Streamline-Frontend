@@ -86,20 +86,10 @@ export default function Dashboard() {
   };
 
   return (
-    <main className="max-w-9xl mx-auto px-2 sm:px-4 py-4">
+    <div className="flex flex-col h-full w-full overflow-hidden">
       {/* Tabs and Navbar */}
       <div className="flex justify-between items-end flex-wrap gap-4 mb-0">
         <div className="flex gap-2 border-b border-gray-200">
-          <button
-            onClick={() => setBoardType("timeline")}
-            className={`px-4 pt-2 pb-5 border rounded-t-xl font-semibold tracking-wide transition-colors duration-300 cursor-pointer ${
-              boardType === "timeline"
-                ? "bg-white border-b-0 text-black"
-                : "bg-gray-100 text-gray-500"
-            }`}
-          >
-            Timeline Board
-          </button>
           <button
             onClick={() => setBoardType("kanban")}
             className={`px-4 pt-2 pb-5 border rounded-t-xl font-semibold tracking-wide transition-colors duration-300 cursor-pointer ${
@@ -110,15 +100,25 @@ export default function Dashboard() {
           >
             Kanban Board
           </button>
+          <button
+            onClick={() => setBoardType("timeline")}
+            className={`px-4 pt-2 pb-5 border rounded-t-xl font-semibold tracking-wide transition-colors duration-300 cursor-pointer ${
+              boardType === "timeline"
+                ? "bg-white border-b-0 text-black"
+                : "bg-gray-100 text-gray-500"
+            }`}
+          >
+            Timeline Board
+          </button>
         </div>
 
         <Navbar user={user} />
       </div>
 
-      {/* Body content */}
-      <div className="bg-white border-t-0 border-r border-b border-gray-200 rounded-br-2xl rounded-tr-2xl rounded-bl-2xl shadow px-6 pt-10 pb-6">
+      {/* Main scroll area */}
+      <div className="flex flex-col flex-1 overflow-hidden rounded-xl bg-white border shadow p-6">
         {boardType === "kanban" && (
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
             <h1 className="text-xl sm:text-2xl font-bold">
               Welcome, {user.name}
             </h1>
@@ -130,7 +130,7 @@ export default function Dashboard() {
           </div>
         )}
 
-        <div className="transition-opacity duration-500 ease-in-out">
+        <div className="flex-1 overflow-auto scrollbar-hide transition-opacity duration-500 ease-in-out">
           {boardType === "kanban" ? (
             <KanbanBoard
               tasks={tasks || []}
@@ -173,6 +173,6 @@ export default function Dashboard() {
         description="This action cannot be undone. This will permanently remove the task."
         confirmText="Yes, Delete"
       />
-    </main>
+    </div>
   );
 }

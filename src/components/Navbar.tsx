@@ -12,7 +12,7 @@ export default function Navbar({ user }: NavbarProps) {
       <div className="flex items-center gap-8 cursor-pointer">
         <button className="relative">
           <Bell className="h-6 w-6 text-gray-700" />
-          <span className="absolute -top-1 -right-1 inline-flex items-center justify-center h-4 w-4 rounded-full bg-red-500 text-white text-[10px] font-bold">
+          <span className="absolute -top-1 -right-1 inline-flex items-center justify-center h-4 w-4 rounded-full bg-red-500 text-white text-[10px] font-bold hover: cursor-pointer">
             3
           </span>
         </button>
