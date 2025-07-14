@@ -78,13 +78,21 @@ export default function TaskModal({
   });
 
   const editor = useEditor({
-    extensions: [StarterKit, Underline, Link],
+    extensions: [
+      StarterKit.configure({
+        underline: false,
+        link: false,
+      }),
+      Underline,
+      Link,
+    ],
     content: watch("description") || "",
     onUpdate: ({ editor }) => {
       const html = editor.getHTML();
       setValue("description", html);
     },
   });
+  
 
   React.useEffect(() => {
     if (defaultTask && mode === "edit") {
