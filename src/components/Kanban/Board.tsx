@@ -16,7 +16,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { type Task } from "@/components/Tasks/TaskList";
-import TaskItem from "@/components/Tasks/TaskItem";
+import TaskItem from "@/components/Tasks/TaskCard";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 

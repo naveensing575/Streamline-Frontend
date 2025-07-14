@@ -1,11 +1,5 @@
-import { Link } from "react-router-dom";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import UserDropdownMenu from "@/components/UserDropdownMenu";
 import type { IUser } from "@/types/User";
 
 interface ProfileMenuProps {
@@ -13,20 +7,20 @@ interface ProfileMenuProps {
 }
 
 export default function ProfileMenu({ user }: ProfileMenuProps) {
+  const items = [
+    { label: "Profile", href: "/profile" },
+    { label: "Settings" },
+    { label: "Manage Users" },
+  ];
+
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Avatar className="h-8 w-8">
+    <UserDropdownMenu
+      trigger={
+        <Avatar className="h-8 w-8 cursor-pointer">
           <AvatarImage src={user.profileImage || ""} alt={user.name} />
         </Avatar>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem asChild>
-          <Link to="/profile">Profile</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem>Settings</DropdownMenuItem>
-        <DropdownMenuItem>Manage Users</DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+      }
+      items={items}
+    />
   );
 }

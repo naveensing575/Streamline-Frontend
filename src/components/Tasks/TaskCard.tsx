@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 
-interface TaskItemProps {
+interface TaskCardProps {
   title: string;
   description?: string;
   status: "todo" | "in-progress" | "done";
@@ -22,7 +22,7 @@ interface TaskItemProps {
   onRequestDelete: () => void;
 }
 
-export default function TaskItem({
+export default function TaskCard({
   title,
   description,
   status,
@@ -34,7 +34,7 @@ export default function TaskItem({
   onBreakdown,
   isBreakingDown,
   onRequestDelete,
-}: TaskItemProps) {
+}: TaskCardProps) {
   const statusClasses = {
     todo: "bg-yellow-100 text-yellow-800",
     "in-progress": "bg-blue-100 text-blue-800",
