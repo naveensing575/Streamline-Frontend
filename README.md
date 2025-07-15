@@ -79,6 +79,7 @@ Use `.env` files for local development:
 
 ```env
 VITE_API_BASE_URL= app_backend_url(HTTP://localhost:5000/api)
+```
 
 ## ✨ Features
 
@@ -91,10 +92,10 @@ VITE_API_BASE_URL= app_backend_url(HTTP://localhost:5000/api)
 ## 🔗 Useful Scripts
 
 ```bash
-pnpm format    # Format code with Prettier
-pnpm lint      # Run ESLint
-pnpm dev       # Start dev server
-pnpm build     # Build for production
+npm run format    # Format code with Prettier
+npm run lint      # Run ESLint
+npm run dev       # Start dev server
+npm run build     # Build for production
 ```
 
 ## 🗂️ Tips for Contributors
