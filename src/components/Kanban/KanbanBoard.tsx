@@ -7,7 +7,7 @@ interface KanbanBoardProps {
   onRequestDelete: (taskId: string) => void
   onStatusChange: (taskId: string, newStatus: string) => void
   onBreakdown: (taskId: string) => void
-  loadingTaskId: string | null
+  breakingDownTaskId: string | null
   isLoading: boolean
 }
 
@@ -17,7 +17,7 @@ export default function KanbanBoard({
   onRequestDelete,
   onStatusChange,
   onBreakdown,
-  loadingTaskId,
+  breakingDownTaskId,
   isLoading,
 }: KanbanBoardProps) {
   return (
@@ -27,7 +27,7 @@ export default function KanbanBoard({
       onRequestDelete={onRequestDelete}
       onStatusChange={onStatusChange}
       onBreakdown={onBreakdown}
-      loadingTaskId={loadingTaskId}
+      breakingDownTaskId={breakingDownTaskId}
       isLoading={isLoading}
     />
   )

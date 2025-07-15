@@ -1,4 +1,4 @@
-import TaskItem from './TaskCard'
+import TaskCard from './TaskCard'
 
 export interface Task {
   subTasks: string[] | undefined
@@ -13,12 +13,14 @@ interface TaskListProps {
   tasks: Task[]
   onEdit: (task: Task) => void
   onRequestDelete: (taskId: string) => void
+  breakingDownTaskId?: string | null
 }
 
 export default function TaskList({
   tasks,
   onEdit,
   onRequestDelete,
+  breakingDownTaskId,
 }: TaskListProps) {
   if (tasks.length === 0) {
     return (
@@ -31,14 +33,16 @@ export default function TaskList({
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
       {tasks.map((task) => (
-        <TaskItem
+        <TaskCard
           key={task._id}
           title={task.title}
           description={task.description}
           status={task.status}
           dueDate={task.dueDate}
+          subTasks={task.subTasks}
           onEdit={() => onEdit(task)}
           onRequestDelete={() => onRequestDelete(task._id)}
+          isBreakingDown={breakingDownTaskId === task._id}
         />
       ))}
     </div>

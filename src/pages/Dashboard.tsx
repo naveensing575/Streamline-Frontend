@@ -38,6 +38,7 @@ export default function Dashboard() {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
   const [taskIdToDelete, setTaskIdToDelete] = useState<string | null>(null)
+  const [breakingDownTaskId, setBreakingDownTaskId] = useState<string | null>(null)
 
   if (!user) return null
 
@@ -111,8 +112,18 @@ export default function Dashboard() {
               toast.error('Failed to update status.')
             }
           }}
-          onBreakdown={breakdownTask}
-          loadingTaskId={null}
+          onBreakdown={async (taskId) => {
+            try {
+              setBreakingDownTaskId(taskId)
+              await breakdownTask(taskId).unwrap()
+              toast.success('Task broken down successfully.')
+            } catch {
+              toast.error('Failed to break down task.')
+            } finally {
+              setBreakingDownTaskId(null)
+            }
+          }}
+          breakingDownTaskId={breakingDownTaskId}
           isLoading={isLoading}
         />
       )
@@ -123,9 +134,8 @@ export default function Dashboard() {
 
   return (
     <div className="flex flex-col h-full w-full overflow-hidden">
-      {/* Tabs and Navbar */}
       <div className="flex justify-between items-end flex-wrap">
-      <div className="flex gap-4 border-b border-gray-200">
+        <div className="flex gap-4 border-b border-gray-200">
           {[
             { type: 'timeline', label: 'Timeline board' },
             { type: 'kanban', label: 'Kanban board' },
@@ -149,12 +159,9 @@ export default function Dashboard() {
             )
           })}
         </div>
-
-
         <Navbar user={user} />
       </div>
 
-      {/* Attached Content Body */}
       <div className="flex flex-col flex-1 overflow-hidden rounded-tl-none rounded-tr-xl rounded-b-xl bg-white border shadow p-6 -mt-px">
         {boardType === 'kanban' && (
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">

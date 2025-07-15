@@ -29,8 +29,8 @@ interface BoardProps {
     newStatus: 'todo' | 'in-progress' | 'done',
   ) => void
   onBreakdown: (taskId: string) => void
-  loadingTaskId: string | null
-  isLoading: boolean // ✅ external loading prop from Dashboard
+  breakingDownTaskId: string | null
+  isLoading: boolean
 }
 
 const statuses: Array<'todo' | 'in-progress' | 'done'> = [
@@ -45,18 +45,16 @@ export default function Board({
   onRequestDelete,
   onStatusChange,
   onBreakdown,
-  loadingTaskId,
-  isLoading, // from parent
+  breakingDownTaskId,
+  isLoading,
 }: BoardProps) {
   const sensors = useSensors(useSensor(PointerSensor))
   const [activeTaskId, setActiveTaskId] = useState<string | null>(null)
 
-  // ✅ Local state to guarantee min skeleton duration
   const [showSkeleton, setShowSkeleton] = useState(isLoading)
 
   useEffect(() => {
     let timeout: NodeJS.Timeout | null = null
-
     if (isLoading) {
       setShowSkeleton(true)
     } else {
@@ -64,7 +62,6 @@ export default function Board({
         setShowSkeleton(false)
       }, 2000)
     }
-
     return () => {
       if (timeout) clearTimeout(timeout)
     }
@@ -120,9 +117,9 @@ export default function Board({
               onEdit={onEdit}
               onRequestDelete={onRequestDelete}
               onBreakdown={onBreakdown}
-              loadingTaskId={loadingTaskId}
+              breakingDownTaskId={breakingDownTaskId}
               activeTaskId={activeTaskId}
-              isLoading={showSkeleton} // ✅ controlled with timeout
+              isLoading={showSkeleton}
             />
           ))}
         </div>
@@ -137,7 +134,7 @@ export default function Board({
             onEdit={() => {}}
             onRequestDelete={() => {}}
             onBreakdown={() => onBreakdown(activeTaskId)}
-            isBreakingDown={loadingTaskId === activeTaskId}
+            isBreakingDown={breakingDownTaskId === activeTaskId}
           />
         ) : null}
       </DragOverlay>
@@ -151,7 +148,7 @@ function DroppableColumn({
   onEdit,
   onRequestDelete,
   onBreakdown,
-  loadingTaskId,
+  breakingDownTaskId,
   activeTaskId,
   isLoading,
 }: {
@@ -160,9 +157,9 @@ function DroppableColumn({
   onEdit: (task: Task) => void
   onRequestDelete: (taskId: string) => void
   onBreakdown: (taskId: string) => void
-  loadingTaskId: string | null
+  breakingDownTaskId: string | null
   activeTaskId: string | null
-  isLoading: boolean // ✅ local flag with timeout
+  isLoading: boolean
 }) {
   const { setNodeRef } = useDroppable({ id })
 
@@ -193,7 +190,7 @@ function DroppableColumn({
               onEdit={onEdit}
               onRequestDelete={onRequestDelete}
               onBreakdown={onBreakdown}
-              loadingTaskId={loadingTaskId}
+              breakingDownTaskId={breakingDownTaskId}
               activeTaskId={activeTaskId}
             />
           ))}
@@ -208,14 +205,14 @@ function SortableTask({
   onEdit,
   onRequestDelete,
   onBreakdown,
-  loadingTaskId,
+  breakingDownTaskId,
   activeTaskId,
 }: {
   task: Task
   onEdit: (task: Task) => void
   onRequestDelete: (taskId: string) => void
   onBreakdown: (taskId: string) => void
-  loadingTaskId: string | null
+  breakingDownTaskId: string | null
   activeTaskId: string | null
 }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -246,7 +243,7 @@ function SortableTask({
         onEdit={() => onEdit(task)}
         onRequestDelete={() => onRequestDelete(task._id)}
         onBreakdown={() => onBreakdown(task._id)}
-        isBreakingDown={loadingTaskId === task._id}
+        isBreakingDown={breakingDownTaskId === task._id}
       />
     </div>
   )
