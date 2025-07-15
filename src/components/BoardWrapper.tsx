@@ -1,22 +1,17 @@
-import useTasks from "@/hooks/useTasks";
-import Board from "@/components/Kanban/Board";
-import type { Task } from "@/components/Tasks/TaskList";
+import useTasks from '@/hooks/useTasks'
+import Board from '@/components/Kanban/Board'
+import type { Task } from '@/components/Tasks/TaskList'
 
 export default function BoardWrapper() {
-  const {
-    tasks,
-    editTask,
-    removeTask,
-    generateSubTasks,
-    loadingTaskId,
-  } = useTasks();
+  const { tasks, editTask, removeTask, generateSubTasks, loadingTaskId } =
+    useTasks()
 
   const handleStatusChange = async (
     taskId: string,
-    newStatus: "todo" | "in-progress" | "done"
+    newStatus: 'todo' | 'in-progress' | 'done',
   ) => {
-    await editTask(taskId, { status: newStatus });
-  };
+    await editTask(taskId, { status: newStatus })
+  }
 
   return (
     <Board
@@ -27,5 +22,5 @@ export default function BoardWrapper() {
       onBreakdown={generateSubTasks}
       loadingTaskId={loadingTaskId}
     />
-  );
+  )
 }

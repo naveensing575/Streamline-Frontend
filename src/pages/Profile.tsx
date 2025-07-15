@@ -1,69 +1,69 @@
-"use client";
+'use client'
 
-import { useState, useEffect } from "react";
-import { useGetMeQuery, useUpdateProfileMutation } from "@/features/useAuth";
-import { toast } from "sonner";
-import ProfileAvatar from "@/components/ProfileAvatar";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2 } from "lucide-react";
+import { useState, useEffect } from 'react'
+import { useGetMeQuery, useUpdateProfileMutation } from '@/features/useAuth'
+import { toast } from 'sonner'
+import ProfileAvatar from '@/components/ProfileAvatar'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Loader2 } from 'lucide-react'
 
 export default function Profile() {
-  const { data: user } = useGetMeQuery();
-  const [updateProfile] = useUpdateProfileMutation();
+  const { data: user } = useGetMeQuery()
+  const [updateProfile] = useUpdateProfileMutation()
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
 
-  const [avatar, setAvatar] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | undefined>(undefined);
+  const [avatar, setAvatar] = useState<File | null>(null)
+  const [previewUrl, setPreviewUrl] = useState<string | undefined>(undefined)
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (user) {
-      setName(user.name);
-      setEmail(user.email);
-      setPreviewUrl(user.profileImage);
+      setName(user.name)
+      setEmail(user.email)
+      setPreviewUrl(user.profileImage)
     }
-  }, [user]);
+  }, [user])
 
   useEffect(() => {
     if (avatar) {
-      const url = URL.createObjectURL(avatar);
-      setPreviewUrl(url);
-      return () => URL.revokeObjectURL(url);
+      const url = URL.createObjectURL(avatar)
+      setPreviewUrl(url)
+      return () => URL.revokeObjectURL(url)
     } else if (user?.profileImage) {
-      setPreviewUrl(user.profileImage);
+      setPreviewUrl(user.profileImage)
     } else {
-      setPreviewUrl(undefined);
+      setPreviewUrl(undefined)
     }
-  }, [avatar, user]);
+  }, [avatar, user])
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+    e.preventDefault()
+    setLoading(true)
 
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("email", email);
-    if (password) formData.append("password", password);
+    const formData = new FormData()
+    formData.append('name', name)
+    formData.append('email', email)
+    if (password) formData.append('password', password)
     if (avatar) {
-      formData.append("avatar", avatar);
+      formData.append('avatar', avatar)
     }
 
     try {
-      await updateProfile(formData).unwrap();
-      toast.success("✅ Profile updated!");
-      setAvatar(null);
+      await updateProfile(formData).unwrap()
+      toast.success('✅ Profile updated!')
+      setAvatar(null)
     } catch {
-      toast.error("❌ Failed to update profile.");
+      toast.error('❌ Failed to update profile.')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <div className="max-w-md mx-auto p-4 mt-4">
@@ -78,12 +78,15 @@ export default function Profile() {
             src={previewUrl}
             onChange={(file) => setAvatar(file)}
             onDelete={() => {
-              setAvatar(null);
-              setPreviewUrl(undefined);
+              setAvatar(null)
+              setPreviewUrl(undefined)
             }}
           />
 
-          <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4 mt-4">
+          <form
+            onSubmit={handleSubmit}
+            className="w-full flex flex-col gap-4 mt-4"
+          >
             <Input
               type="text"
               value={name}
@@ -113,5 +116,5 @@ export default function Profile() {
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }

@@ -1,55 +1,55 @@
-"use client";
+'use client'
 
-import * as React from "react";
+import * as React from 'react'
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { DatePicker } from "@/components/DatePicker";
-import { type Task } from "@/components/Tasks/TaskList";
+} from '@/components/ui/select'
+import { useForm, Controller } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
+import { DatePicker } from '@/components/DatePicker'
+import { type Task } from '@/components/Tasks/TaskList'
 
-import { useEditor, EditorContent } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import Underline from "@tiptap/extension-underline";
-import Link from "@tiptap/extension-link";
-import TiptapToolbar from "@/components/TiptapToolbar";
+import { useEditor, EditorContent } from '@tiptap/react'
+import StarterKit from '@tiptap/starter-kit'
+import Underline from '@tiptap/extension-underline'
+import Link from '@tiptap/extension-link'
+import TiptapToolbar from '@/components/TiptapToolbar'
 
 const formSchema = z.object({
-  title: z.string().min(1, { message: "Title is required" }),
+  title: z.string().min(1, { message: 'Title is required' }),
   description: z.string().optional(),
-  status: z.enum(["todo", "in-progress", "done"]),
+  status: z.enum(['todo', 'in-progress', 'done']),
   dueDate: z.date({
-    required_error: "Due date is required",
-    invalid_type_error: "Invalid date",
+    required_error: 'Due date is required',
+    invalid_type_error: 'Invalid date',
   }),
-});
+})
 
 interface TaskModalProps {
-  open: boolean;
-  setOpen: (open: boolean) => void;
-  mode: "add" | "edit";
-  defaultTask?: Task;
+  open: boolean
+  setOpen: (open: boolean) => void
+  mode: 'add' | 'edit'
+  defaultTask?: Task
   onSubmit: (values: {
-    title: string;
-    description?: string;
-    status: "todo" | "in-progress" | "done";
-    dueDate: Date;
-  }) => void;
+    title: string
+    description?: string
+    status: 'todo' | 'in-progress' | 'done'
+    dueDate: Date
+  }) => void
 }
 
 export default function TaskModal({
@@ -70,12 +70,12 @@ export default function TaskModal({
   } = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: defaultTask?.title || "",
-      description: defaultTask?.description || "",
-      status: defaultTask?.status || "todo",
+      title: defaultTask?.title || '',
+      description: defaultTask?.description || '',
+      status: defaultTask?.status || 'todo',
       dueDate: defaultTask?.dueDate ? new Date(defaultTask.dueDate) : undefined,
     },
-  });
+  })
 
   const editor = useEditor({
     extensions: [
@@ -86,33 +86,42 @@ export default function TaskModal({
       Underline,
       Link,
     ],
-    content: watch("description") || "",
+    content: watch('description') || '',
     onUpdate: ({ editor }) => {
-      const html = editor.getHTML();
-      setValue("description", html);
+      const html = editor.getHTML()
+      setValue('description', html)
     },
-  });
-  
+  })
 
+  // Focus cursor at end on mount
   React.useEffect(() => {
-    if (defaultTask && mode === "edit") {
+    if (editor && open) {
+      editor.commands.focus('end')
+    }
+  }, [editor, open])
+
+  // Reset content on modal open
+  React.useEffect(() => {
+    if (defaultTask && mode === 'edit') {
       reset({
         title: defaultTask.title,
-        description: defaultTask.description || "",
+        description: defaultTask.description || '',
         status: defaultTask.status,
-        dueDate: defaultTask.dueDate ? new Date(defaultTask.dueDate) : undefined,
-      });
-      editor?.commands.setContent(defaultTask.description || "");
-    } else if (mode === "add") {
+        dueDate: defaultTask.dueDate
+          ? new Date(defaultTask.dueDate)
+          : undefined,
+      })
+      editor?.commands.setContent(defaultTask.description || '')
+    } else if (mode === 'add') {
       reset({
-        title: "",
-        description: "",
-        status: "todo",
+        title: '',
+        description: '',
+        status: 'todo',
         dueDate: undefined,
-      });
-      editor?.commands.clearContent();
+      })
+      editor?.commands.clearContent()
     }
-  }, [defaultTask, mode, reset, editor]);
+  }, [defaultTask, mode, reset, editor])
 
   const handleFormSubmit = (values: z.infer<typeof formSchema>) => {
     const cleaned = {
@@ -120,24 +129,24 @@ export default function TaskModal({
       description: values.description,
       status: values.status,
       dueDate: values.dueDate,
-    };
+    }
 
-    onSubmit(cleaned);
-    reset();
-    setOpen(false);
-  };
+    onSubmit(cleaned)
+    reset()
+    setOpen(false)
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="w-[90vw] max-w-md sm:max-w-lg">
+      <DialogContent className="w-[90vw] max-w-md sm:max-w-lg bg-white border-1">
         <DialogHeader>
           <DialogTitle className="text-lg sm:text-xl">
-            {mode === "add" ? "Create a New Task" : "Edit Task"}
+            {mode === 'add' ? 'Create a New Task' : 'Edit Task'}
           </DialogTitle>
           <DialogDescription className="text-sm">
-            {mode === "add"
-              ? "Add task details below."
-              : "Update your task details below."}
+            {mode === 'add'
+              ? 'Add task details below.'
+              : 'Update your task details below.'}
           </DialogDescription>
         </DialogHeader>
 
@@ -146,11 +155,12 @@ export default function TaskModal({
           <div>
             <Input
               placeholder="Title"
-              {...register("title")}
-              className={
-                errors.title ? "border-red-500 focus-visible:ring-red-500" : ""
-              }
+              {...register('title')}
+              className={`w-full truncate whitespace-nowrap overflow-hidden text-ellipsis ${
+                errors.title ? 'border-red-500 focus-visible:ring-red-500' : ''
+              }`}
             />
+
             {errors.title && (
               <p className="text-sm text-red-500 mt-1">
                 {errors.title.message}
@@ -158,32 +168,40 @@ export default function TaskModal({
             )}
           </div>
 
-          {/* Tiptap Editor */}
+          {/* Tiptap Toolbar */}
           {editor && <TiptapToolbar editor={editor} />}
+
+          {/* Editor Content */}
           <Controller
             name="description"
             control={control}
             render={() => (
-              <div className="border rounded p-2 min-h-[150px] max-h-[250px] overflow-y-auto pb-4">
-                <EditorContent editor={editor} className="prose focus:outline-none" />
+              <div className="relative border border-gray-300 rounded min-h-[150px] max-h-[250px] overflow-y-auto">
+                <EditorContent
+                  editor={editor}
+                  className="focus:outline-none p-2"
+                />
+                {editor && editor.getText().trim().length === 0 && (
+                  <span className="absolute top-2 left-2 text-sm text-gray-400 pointer-events-none">
+                    Add a description...
+                  </span>
+                )}
               </div>
             )}
           />
-          {errors.description && (
-            <p className="text-sm text-red-500 mt-1">
-              {errors.description.message}
-            </p>
-          )}
+
 
           {/* Status */}
           <div>
             <Select
-              value={watch("status")}
-              onValueChange={(value) => setValue("status", value as any)}
+              value={watch('status')}
+              onValueChange={(value) => setValue('status', value as any)}
             >
               <SelectTrigger
                 className={
-                  errors.status ? "border-red-500 focus-visible:ring-red-500" : ""
+                  errors.status
+                    ? 'border-red-500 focus-visible:ring-red-500'
+                    : ''
                 }
               >
                 <SelectValue placeholder="Select status" />
@@ -214,10 +232,10 @@ export default function TaskModal({
           />
 
           <Button type="submit" className="w-full min-h-[40px]">
-            {mode === "add" ? "Create Task" : "Save Changes"}
+            {mode === 'add' ? 'Create Task' : 'Save Changes'}
           </Button>
         </form>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

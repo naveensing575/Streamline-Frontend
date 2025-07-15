@@ -1,14 +1,14 @@
-import Board from "@/components/Kanban/Board";
-import { type Task } from "@/components/Tasks/TaskList";
+import Board from '@/components/Kanban/Board'
+import { type Task } from '@/components/Tasks/TaskList'
 
 interface KanbanBoardProps {
-  tasks: Task[];
-  onEdit: (task: Task) => void;
-  onRequestDelete: (taskId: string) => void;
-  onStatusChange: (taskId: string, newStatus: string) => void;
-  onBreakdown: (taskId: string) => void;
-  loadingTaskId: string | null;
-  isLoading: boolean;
+  tasks: Task[]
+  onEdit: (task: Task) => void
+  onRequestDelete: (taskId: string) => void
+  onStatusChange: (taskId: string, newStatus: string) => void
+  onBreakdown: (taskId: string) => void
+  breakingDownTaskId: string | null
+  isLoading: boolean
 }
 
 export default function KanbanBoard({
@@ -17,8 +17,8 @@ export default function KanbanBoard({
   onRequestDelete,
   onStatusChange,
   onBreakdown,
-  loadingTaskId,
-  isLoading
+  breakingDownTaskId,
+  isLoading,
 }: KanbanBoardProps) {
   return (
     <Board
@@ -27,8 +27,8 @@ export default function KanbanBoard({
       onRequestDelete={onRequestDelete}
       onStatusChange={onStatusChange}
       onBreakdown={onBreakdown}
-      loadingTaskId={loadingTaskId}
+      breakingDownTaskId={breakingDownTaskId}
       isLoading={isLoading}
     />
-  );
+  )
 }

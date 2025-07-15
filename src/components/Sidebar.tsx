@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard,
   KanbanSquare,
@@ -7,31 +7,31 @@ import {
   Truck,
   Settings,
   LogOut,
-} from "lucide-react";
-import logo from "@/assets/logo2.png";
-import { toast } from "sonner";
+} from 'lucide-react'
+import logo from '@/assets/logo2.png'
+import { toast } from 'sonner'
 
 export default function Sidebar() {
-  const location = useLocation();
+  const location = useLocation()
 
   const navLinks = [
-    { path: "/", icon: LayoutDashboard },
-    { path: "/kanban", icon: KanbanSquare },
-    { path: "/timeline", icon: CalendarRange },
-    { path: "/inventory", icon: Package },
-    { path: "/logistics", icon: Truck },
-  ];
+    { path: '/', icon: LayoutDashboard },
+    { path: '/kanban', icon: KanbanSquare },
+    { path: '/timeline', icon: CalendarRange },
+    { path: '/inventory', icon: Package },
+    { path: '/logistics', icon: Truck },
+  ]
 
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    toast.success("Logged out successfully.");
-    navigate("/login");
-  };
+    localStorage.removeItem('token')
+    toast.success('Logged out successfully.')
+    navigate('/login')
+  }
 
   return (
-    <aside className="w-24 sm:w-28 bg-[#ECEFE9] flex flex-col justify-between items-center py-6 px-4">
+    <aside className="w-24 sm:w-28 flex flex-col justify-between items-center py-6 px-4">
       {/* Logo */}
       <div className="w-full flex justify-center">
         <Link to="/" className="w-full flex justify-center items-center">
@@ -46,22 +46,22 @@ export default function Sidebar() {
       {/* Center Nav Icons */}
       <nav className="flex flex-col items-center gap-7 flex-1 justify-center">
         {navLinks.map(({ path, icon: Icon }) => {
-          const isActive = location.pathname === path;
+          const isActive = location.pathname === path
           return (
             <Link
               key={path}
               to={path}
               className={`flex items-center justify-center p-2 rounded-lg ${
-                isActive ? "bg-black text-white" : "text-gray-700"
+                isActive ? 'bg-black text-white' : 'text-gray-700'
               } hover:text-black`}
             >
               <Icon
                 className={`${
-                  isActive ? "text-white" : "text-gray-700"
+                  isActive ? 'text-white' : 'text-gray-700'
                 } h-4 w-4 sm:h-5 sm:w-5`}
               />
             </Link>
-          );
+          )
         })}
       </nav>
 
@@ -70,16 +70,16 @@ export default function Sidebar() {
         <Link
           to="/admin/users"
           className={`flex items-center justify-center p-2 rounded-lg ${
-            location.pathname === "/settings"
-              ? "bg-black text-white"
-              : "text-gray-700"
+            location.pathname === '/settings'
+              ? 'bg-black text-white'
+              : 'text-gray-700'
           } hover:text-black`}
         >
           <Settings
             className={`${
-              location.pathname === "/admin/users"
-                ? "text-gray-900"
-                : "text-gray-700"
+              location.pathname === '/admin/users'
+                ? 'text-gray-900'
+                : 'text-gray-700'
             } h-4 w-4 sm:h-5 sm:w-5`}
           />
         </Link>
@@ -92,5 +92,5 @@ export default function Sidebar() {
         </button>
       </div>
     </aside>
-  );
+  )
 }

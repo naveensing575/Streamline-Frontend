@@ -2,52 +2,52 @@ import {
   useGetAllUsersQuery,
   useUpdateUserRoleMutation,
   useDeleteUserMutation,
-} from "@/features/useAdmin";
-import { useGetMeQuery } from "@/features/useAuth";
-import { Button } from "@/components/ui/button";
+} from '@/features/useAdmin'
+import { useGetMeQuery } from '@/features/useAuth'
+import { Button } from '@/components/ui/button'
 import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
-} from "@/components/ui/select";
-import ConfirmDialog from "@/components/ConfirmDialog";
-import { toast } from "sonner";
-import { useState } from "react";
-import { Loader2 } from "lucide-react";
+} from '@/components/ui/select'
+import ConfirmDialog from '@/components/ConfirmDialog'
+import { toast } from 'sonner'
+import { useState } from 'react'
+import { Loader2 } from 'lucide-react'
 
 export default function ManageUsers() {
-  const { data: user } = useGetMeQuery();
-  const { data: users = [], isLoading } = useGetAllUsersQuery();
-  const [updateUserRole] = useUpdateUserRoleMutation();
-  const [deleteUser] = useDeleteUserMutation();
+  const { data: user } = useGetMeQuery()
+  const { data: users = [], isLoading } = useGetAllUsersQuery()
+  const [updateUserRole] = useUpdateUserRoleMutation()
+  const [deleteUser] = useDeleteUserMutation()
 
-  const [openDialogId, setOpenDialogId] = useState<string | null>(null);
+  const [openDialogId, setOpenDialogId] = useState<string | null>(null)
 
-  const handleRoleChange = async (id: string, newRole: "user" | "admin") => {
+  const handleRoleChange = async (id: string, newRole: 'user' | 'admin') => {
     try {
-      const res = await updateUserRole({ id, role: newRole }).unwrap();
-      toast.success(res.message);
+      const res = await updateUserRole({ id, role: newRole }).unwrap()
+      toast.success(res.message)
     } catch {
-      toast.error("Failed to update user role.");
+      toast.error('Failed to update user role.')
     }
-  };
+  }
 
   const handleDelete = async (id: string) => {
     try {
-      const res = await deleteUser(id).unwrap();
-      toast.success(res.message);
+      const res = await deleteUser(id).unwrap()
+      toast.success(res.message)
     } catch {
-      toast.error("Failed to delete user.");
+      toast.error('Failed to delete user.')
     } finally {
-      setOpenDialogId(null);
+      setOpenDialogId(null)
     }
-  };
+  }
 
-  if (!user) return null;
+  if (!user) return null
 
-  if (user.role !== "admin") {
+  if (user.role !== 'admin') {
     return (
       <div className="mt-12 p-6 bg-white rounded-xl shadow text-center">
         <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
@@ -55,7 +55,7 @@ export default function ManageUsers() {
           Sorry, you do not have permission to view this page.
         </p>
       </div>
-    );
+    )
   }
 
   return (
@@ -83,8 +83,8 @@ export default function ManageUsers() {
                   key={u._id}
                   className={
                     index % 2 === 0
-                      ? "bg-white"
-                      : "bg-gray-50 hover:bg-gray-100"
+                      ? 'bg-white'
+                      : 'bg-gray-50 hover:bg-gray-100'
                   }
                 >
                   <td className="border px-4 py-3">{u.name}</td>
@@ -93,7 +93,7 @@ export default function ManageUsers() {
                     <Select
                       value={u.role}
                       onValueChange={(value) =>
-                        handleRoleChange(u._id, value as "user" | "admin")
+                        handleRoleChange(u._id, value as 'user' | 'admin')
                       }
                     >
                       <SelectTrigger className="w-[120px] mx-auto cursor-pointer">
@@ -133,5 +133,5 @@ export default function ManageUsers() {
         </div>
       )}
     </div>
-  );
+  )
 }
