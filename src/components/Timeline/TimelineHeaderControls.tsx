@@ -4,7 +4,11 @@ import * as React from 'react'
 import { format } from 'date-fns'
 import { Calendar, Filter, Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 import { DatePicker } from '@/components/DatePicker'
 
 export default function TimelineHeaderControls() {
@@ -19,7 +23,9 @@ export default function TimelineHeaderControls() {
           <PopoverTrigger asChild>
             <Button variant="outline" className="flex items-center gap-2">
               <Calendar className="w-4 h-4" />
-              <span>{date ? format(date, 'EEEE, dd.MM.yyyy') : 'Pick a date'}</span>
+              <span>
+                {date ? format(date, 'EEEE, dd.MM.yyyy') : 'Pick a date'}
+              </span>
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0">

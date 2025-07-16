@@ -4,7 +4,9 @@ interface TimelineColumnHeaderProps {
   timeSlots: string[]
 }
 
-export default function TimelineColumnHeader({ timeSlots }: TimelineColumnHeaderProps) {
+export default function TimelineColumnHeader({
+  timeSlots,
+}: TimelineColumnHeaderProps) {
   return (
     <div className="flex w-[max-content] border-l">
       {timeSlots.map((slot) => (

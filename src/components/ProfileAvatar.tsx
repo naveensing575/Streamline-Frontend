@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { User, UserPlus, Pencil, X, Loader2 } from 'lucide-react'
+import { User, UserPlus, Pencil, X } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -9,6 +9,7 @@ import {
 import { Button } from '@/components/ui/button'
 import CropModal from '@/components/CropModal'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
+import Loader from './Loader'
 
 export default function ProfileAvatar({
   src,
@@ -65,9 +66,7 @@ export default function ProfileAvatar({
         onClick={() => src && setPreviewOpen(true)}
       >
         {isUploading ? (
-          <div className="w-full h-full flex items-center justify-center bg-gray-100">
-            <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
-          </div>
+          <Loader/>
         ) : src ? (
           <img
             src={src}

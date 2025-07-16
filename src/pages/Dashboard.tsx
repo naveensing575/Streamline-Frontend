@@ -9,7 +9,6 @@ import StopwatchModal from '@/components/StopwatchModal'
 import EditTaskTrigger from '@/components/Tasks/EditTaskTrigger'
 import Navbar from '@/components/Navbar'
 import ConfirmDialog from '@/components/ConfirmDialog'
-import { Loader2 } from 'lucide-react'
 
 import { useGetMeQuery } from '@/features/useAuth'
 import {
@@ -21,6 +20,7 @@ import {
 } from '@/features/useTasks'
 
 import { type Task } from '@/components/Tasks/TaskList'
+import Loader from '@/components/Loader'
 
 export default function Dashboard() {
   const { data: user } = useGetMeQuery()
@@ -38,7 +38,9 @@ export default function Dashboard() {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
   const [taskIdToDelete, setTaskIdToDelete] = useState<string | null>(null)
-  const [breakingDownTaskId, setBreakingDownTaskId] = useState<string | null>(null)
+  const [breakingDownTaskId, setBreakingDownTaskId] = useState<string | null>(
+    null,
+  )
 
   if (!user) return null
 
@@ -89,9 +91,7 @@ export default function Dashboard() {
   const renderBoardContent = () => {
     if (isLoading) {
       return (
-        <div className="flex items-center justify-center flex-1">
-          <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
-        </div>
+        <Loader/>
       )
     }
 
