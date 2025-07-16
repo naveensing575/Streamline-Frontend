@@ -1,12 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { GripVertical, MoreHorizontal, Loader2, Calendar } from 'lucide-react'
+import { GripVertical, MoreHorizontal, Calendar } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
 } from '@/components/ui/dropdown-menu'
+import Loader from '../Loader'
 
 interface TaskCardProps {
   title: string
@@ -87,7 +88,7 @@ export default function TaskCard({
                   >
                     {isBreakingDown ? (
                       <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        <Loader/>
                         Generating...
                       </>
                     ) : status === 'done' ? (
@@ -121,7 +122,7 @@ export default function TaskCard({
 
         {isBreakingDown && (
           <div className="flex items-center gap-2 text-xs text-gray-500 mt-2">
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <Loader/>
             Breaking down task using AI...
           </div>
         )}

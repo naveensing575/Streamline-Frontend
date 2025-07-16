@@ -190,7 +190,6 @@ export default function TaskModal({
             )}
           />
 
-
           {/* Status */}
           <div>
             <Select

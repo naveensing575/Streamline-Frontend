@@ -2,9 +2,9 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard,
   KanbanSquare,
-  CalendarRange,
-  Package,
-  Truck,
+  CalendarDays,
+  Target,
+  BarChart2,
   Settings,
   LogOut,
 } from 'lucide-react'
@@ -13,16 +13,15 @@ import { toast } from 'sonner'
 
 export default function Sidebar() {
   const location = useLocation()
+  const navigate = useNavigate()
 
   const navLinks = [
-    { path: '/', icon: LayoutDashboard },
+    { path: '/', icon: LayoutDashboard },  
     { path: '/kanban', icon: KanbanSquare },
-    { path: '/timeline', icon: CalendarRange },
-    { path: '/inventory', icon: Package },
-    { path: '/logistics', icon: Truck },
+    { path: '/calendar', icon: CalendarDays },
+    { path: '/focus', icon: Target },        
+    { path: '/insights', icon: BarChart2 },
   ]
-
-  const navigate = useNavigate()
 
   const handleLogout = () => {
     localStorage.removeItem('token')
@@ -68,7 +67,7 @@ export default function Sidebar() {
       {/* Bottom Settings & Logout */}
       <div className="flex flex-col items-center gap-5 mt-4 pb-4">
         <Link
-          to="/admin/users"
+          to="/settings"
           className={`flex items-center justify-center p-2 rounded-lg ${
             location.pathname === '/settings'
               ? 'bg-black text-white'
@@ -77,8 +76,8 @@ export default function Sidebar() {
         >
           <Settings
             className={`${
-              location.pathname === '/admin/users'
-                ? 'text-gray-900'
+              location.pathname === '/settings'
+                ? 'text-white'
                 : 'text-gray-700'
             } h-4 w-4 sm:h-5 sm:w-5`}
           />
@@ -94,3 +93,4 @@ export default function Sidebar() {
     </aside>
   )
 }
+  
