@@ -3,9 +3,9 @@ import Register from '@/pages/Register'
 import Login from '@/pages/Login'
 import Dashboard from '@/pages/Dashboard'
 import Kanban from '@/pages/Kanban'
-import Timeline from '@/pages/Timeline'
-import Inventory from '@/pages/Inventory'
-import Logistics from '@/pages/Logistics'
+import Insights from '@/pages/Insights'
+import Calendar from '@/pages/Calendar'
+import Focus from '@/pages/Focus'
 import NotFound from '@/pages/NotFound'
 import ManageUsers from '@/pages/ManageUsers'
 import Profile from '@/pages/Profile'
@@ -27,9 +27,9 @@ export default function App() {
         >
           <Route path="/" element={<Dashboard />} />
           <Route path="/kanban" element={<Kanban />} />
-          <Route path="/timeline" element={<Timeline />} />
-          <Route path="/inventory" element={<Inventory />} />
-          <Route path="/logistics" element={<Logistics />} />
+          <Route path="/insights" element={<Insights />} />
+          <Route path="/calendar" element={<Calendar />} />
+          <Route path="/focus" element={<Focus />} />
           <Route path="/admin/users" element={<ManageUsers />} />
           <Route path="/profile" element={<Profile />} />
         </Route>
